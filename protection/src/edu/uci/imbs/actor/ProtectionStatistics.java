@@ -1,0 +1,172 @@
+package edu.uci.imbs.actor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+public class ProtectionStatistics
+{
+	private static Logger logger = Logger.getLogger(ProtectionStatistics.class);
+	private double payoffDiscrepancyTolerance;
+	public  int period;
+	public  int numberBandits;
+	public  int numberPeasants;
+	public  double averageBanditPayoff;
+	public  double averagePeasantPayoff;
+	public  int peasantAdjustment;
+	public double banditPeasantPayoffDelta;
+
+	protected List<StatisticsRecord> statisticsRecords;
+	protected List<Peasant> peasants;
+	protected List<Bandit> bandits;
+	protected double adjustmentPercentage;
+
+	public ProtectionStatistics(List<Bandit> bandits, List<Peasant> peasants)
+	{
+		this.bandits = bandits; 
+		this.peasants = peasants; 
+		period = 1; 
+		statisticsRecords = new ArrayList<StatisticsRecord>(); 
+		calculate(); 
+	}
+	protected void calculateForTesting()
+	{
+		calculate(); 
+	}
+	private void calculate()
+	{
+		numberBandits = bandits.size(); 
+		numberPeasants = peasants.size();
+//		numberBandits = pattern.getSourceList().size(); 
+//		numberPeasants = pattern.getTargetList().size();
+		calculateAverageBanditPayoff(); 
+		calculateAveragePeasantPayoff(); 
+		calculateBanditPeasantPayoffDelta(); 
+		calculatePeasantAdjustment();
+		calculateAdditionalStatistics(); 
+	}
+	private void calculateBanditPeasantPayoffDelta()
+	{
+		banditPeasantPayoffDelta = (averageBanditPayoff - averagePeasantPayoff); 
+	}
+	protected void calculateAdditionalStatistics()
+	{
+		//TODO  refactor to abstract
+	}
+	private void calculateAverageBanditPayoff()
+	{
+		double sumPayoffs = 0; 
+		for (Bandit bandit : bandits)
+		{
+			sumPayoffs += bandit.getPayoff();  
+		}
+		averageBanditPayoff = (numberBandits() > 0) ? sumPayoffs / numberBandits() : 0;
+	}
+	private void calculateAveragePeasantPayoff()
+	{
+		double sumPayoffs = 0; 
+//		for (Peasant peasant : pattern.getTargetList())
+		for (Heritable peasant : peasants)
+		{
+			sumPayoffs += peasant.getPayoff();  
+		}
+		averagePeasantPayoff = (numberPeasants() > 0) ? sumPayoffs / numberPeasants() : 0;
+	}
+	private void calculatePeasantAdjustment()
+	{
+		int adjustment = 0; 
+		if (Math.abs(averageBanditPayoff - averagePeasantPayoff) <= payoffDiscrepancyTolerance) adjustment = 0; 
+		else  adjustment = (averageBanditPayoff > averagePeasantPayoff) ? (1 * getAdjustmentFactor()) : (-1 * getAdjustmentFactor());
+		peasantAdjustment = adjustment; 
+	}
+	public void updatePopulations(List<Bandit> bandits,
+			List<Peasant> peasants)
+	{
+		setPeasants(peasants);
+		setBandits(bandits);
+		int size = getStatisticsRecords().size(); 
+		if (size > 0) 
+		{
+			getStatisticsRecords().get(size-1).numberBanditsAfterReplication = bandits.size(); 
+			getStatisticsRecords().get(size-1).numberPeasantsAfterReplication = peasants.size(); 
+			logger.debug("populations after replications updated."); 
+		}
+		logger.debug("populations updated.");
+	}
+	public int getAdjustmentFactor()
+	{
+		Double factor = numberPeasants * adjustmentPercentage;
+		if ((factor) < 1d) return 1;  
+		else return factor.intValue();
+	}
+	public void setAdjustmentFactorPercentage(double percentage)
+	{
+		if ((percentage < 0) || (percentage > 1.0d)) throw new IllegalArgumentException("ProtectionStatistics.setAdjustmentFactorPercentage:  valid percentages are from 0.0 to 1.0.  Received: "+percentage);  
+		this.adjustmentPercentage = percentage; 
+	}
+	public void tick()
+	{
+		calculate(); 
+		buildStatisticsRecord(); 
+		period++; 
+		logger.debug("tick completed.");
+	}
+	public int numberPeasants()
+	{
+		return numberPeasants; 
+	}
+	public double averagePeasantPayoff()
+	{
+		return averagePeasantPayoff;
+	}
+	public int numberBandits()
+	{
+		return numberBandits; 
+	}
+	public double averageBanditPayoff()
+	{ 
+		return averageBanditPayoff; 
+	}
+	public void setPayoffDiscrepancyTolerance(double payoffDiscrepancyTolerance)
+	{
+		this.payoffDiscrepancyTolerance = payoffDiscrepancyTolerance; 
+	}
+	public double getPayoffDiscrepancyTolerance()
+	{
+		return payoffDiscrepancyTolerance;
+	}
+	public int getPeasantAdjustment()
+	{
+		return peasantAdjustment;
+	}
+	public int numberPeriods()
+	{
+		return period;
+	}
+	protected void buildStatisticsRecord()
+	{
+		statisticsRecords.add(new StatisticsRecord(period, numberBandits, numberPeasants, averageBanditPayoff, averagePeasantPayoff, banditPeasantPayoffDelta, peasantAdjustment)); 
+		logger.debug("statistics record added: "+statisticsRecords.size());  
+	}
+	public List<? extends StatisticsRecord> getStatisticsRecords()
+	{
+		return statisticsRecords;
+	}
+	public List<Peasant> getPeasants()
+	{
+		return peasants;
+	}
+	public void setPeasants(List<Peasant> peasants)
+	{
+		this.peasants = peasants;
+	}
+	public List<Bandit> getBandits()
+	{
+		return bandits;
+	}
+	public void setBandits(List<Bandit> bandits)
+	{
+		this.bandits = bandits;
+	}
+}

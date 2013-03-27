@@ -1,0 +1,82 @@
+match function:  alpha / beta in [0,1], no constraint on mu? 
+MultipleBehaviorInteractionPattern:  matching function gives number of matches; 
+calculate as percentage of bandit.size(); that percentage of peasants can be preyed upon
+capped at 1.0
+but costs are incurred regardless, for each number that the bandit selects.  
+ParameterSpace should check to see if target class has a validate method, and if so, iterate through parameter points calling validate to ensure that only supported combinations are 
+invoked.
+Static parameters....keep getting side effect :(
+
+protection statistics not printing the last record after governor says stop.  Compare:  Scenario_48_2013_02_12__06_16_31PM_Default scenario name and Scenario_48_2013_02_17__12_45_05PM_Default scenario name
+from scenario sets 27 and 26
+
+getSourceList and getTargetList not used in prod code; maintain for testing only? 
+fit:  name and persist parameter space
+
+interaction pattern: match lists
+peasant: peasant calculates sum of y_i's, updates contest function
+seeker: bandits prey on peasants
+bandit: bandits sum payoffs
+seeker: invoke dynamic
+
+move fitlibrary to its own project
+range parameter for doubles
+
+Peasant:  protected / unprotected output
+N constant, so shift from peasant to bandit or vv
+Payoffs are reset at each period; don't accumulate. 
+we stop when discrepancy within threshold, once; should we test multiple times? 
+next:  sweep parameter space:  x from 0 to 1 by .01; power from .025 to 5 by .025? N:  50, 100, 200, 500? 
+gamma .5 to 1 
+uniform 0 to 1 by .05
+threshold for survival X 2 for double kids 
+visualize results
+solve formula as acceptance test.
+
+EquilibriumSeeker
+	inputs:  List of bandits and peasants, per parameters from parameter space
+	uses InteractionPattern to permute the lists of b & p
+	creates ProtectionStatistics to process numbers, evaluate stopping conditions
+	iterates through pairs
+		each pair:  bandit preys
+	after all pairs processed, stats updated, 
+	stats evaluates:  swap bandit / peasant; stand pat; if limit of runs is reached without standing pat, then stop 
+	    
+ProtectionModel:
+    parameters:  number of bandits, peasants, power range parameter, protection proportion range parameter
+    inputs
+    builds lists of bandits & peasants
+    equilibrium seeker
+    
+ Variable:
+ 	private ReplicatorDynamic replicatorDynamic;
+	public void buildNextGenerations()
+		List<Peasant> newPeasants = new ArrayList<Peasant>(); 
+		replicatorDynamic.replicate(Peasant.class, peasantList, newPeasants);  
+		List<Bandit> newBandits = new ArrayList<Bandit>(); 
+		replicatorDynamic.replicate(Bandit.class, banditList, newBandits);  
+		peasantList = newPeasants; 
+		banditList = newBandits;
+Constant:
+
+	public void runToEquilibriumOrLimit()
+		while (!done)
+			if (protectionStatistics.numberPeriods() == limit) done = true; 
+			banditsPreyOnPeasants();
+			protectionStatistics.tick(); 
+			buildNextGenerations(); //  traverses lists of dynamics
+			updatePopulationLists();
+			tickAll();
+
+    For Dynamic dynamic dynamics
+    {
+    	setBanditList, setPeasantList
+    }
+
+ProtectionReplicatorDynamic
+RoleShiftingReplicatorDynamic implements Dynamic
+  setBanditList 
+  setPeasantList
+  get...
+  ProtectionStatistics
+            
