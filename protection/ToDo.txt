@@ -1,3 +1,4 @@
+verify connection to remote repo
 match function:  alpha / beta in [0,1], no constraint on mu? 
 MultipleBehaviorInteractionPattern:  matching function gives number of matches; 
 calculate as percentage of bandit.size(); that percentage of peasants can be preyed upon
