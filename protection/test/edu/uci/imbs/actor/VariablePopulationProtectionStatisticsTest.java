@@ -40,28 +40,28 @@ public class VariablePopulationProtectionStatisticsTest
 		assertEquals("if multiple bins have same number of entries, the first bin is returned as mode",
 				0.0, statistics.modePeasantProtectionProportion(), .001);
 		assertEquals(.375, statistics.medianPeasantProtectionProportion(), .001);
-		assertEquals("\n" +
-					 "0.0 : xx\n"+
-				     "0.05: xx\n"+
-				     "0.1 : \n"+
-				     "0.15: \n"+
-				     "0.2 : \n"+
-				     "0.25: \n"+
-				     "0.3 : \n"+
-				     "0.35: x\n"+
-				     "0.4 : x\n"+
-				     "0.45: \n"+
-				     "0.5 : x\n"+
-				     "0.55: \n"+
-				     "0.6 : \n"+
-				     "0.65: x\n"+
-				     "0.7 : \n"+
-				     "0.75: \n"+
-				     "0.8 : \n"+
-				     "0.85: \n"+
-				     "0.9 : x\n"+
-				     "0.95: \n"+
-				     "1.0 : x\n", statistics.printPeasantProtectionProportionDistribution());
+		assertEquals(""+Constants.CRLF +
+					 "0.0 : xx"+Constants.CRLF+
+				     "0.05: xx"+Constants.CRLF+
+				     "0.1 : "+Constants.CRLF+
+				     "0.15: "+Constants.CRLF+
+				     "0.2 : "+Constants.CRLF+
+				     "0.25: "+Constants.CRLF+
+				     "0.3 : "+Constants.CRLF+
+				     "0.35: x"+Constants.CRLF+
+				     "0.4 : x"+Constants.CRLF+
+				     "0.45: "+Constants.CRLF+
+				     "0.5 : x"+Constants.CRLF+
+				     "0.55: "+Constants.CRLF+
+				     "0.6 : "+Constants.CRLF+
+				     "0.65: x"+Constants.CRLF+
+				     "0.7 : "+Constants.CRLF+
+				     "0.75: "+Constants.CRLF+
+				     "0.8 : "+Constants.CRLF+
+				     "0.85: "+Constants.CRLF+
+				     "0.9 : x"+Constants.CRLF+
+				     "0.95: "+Constants.CRLF+
+				     "1.0 : x"+Constants.CRLF, statistics.printPeasantProtectionProportionDistribution());
 	}
 	@Test
 	public void verifyStatisticsGatheredForPredationEffortDistribution() throws Exception
@@ -69,17 +69,17 @@ public class VariablePopulationProtectionStatisticsTest
 		assertEquals(3.4, statistics.averageBanditNumberPeasantsToPreyUpon(), .001);
 		assertEquals(4, statistics.medianBanditNumberPeasantsToPreyUpon(), .001);
 		assertEquals(1, statistics.modeBanditNumberPeasantsToPreyUpon());
-		assertEquals("\n" +
-				"1 : yy\n"+
-				"2 : \n"+
-				"3 : \n"+
-				"4 : y\n"+
-				"5 : y\n"+
-				"6 : y\n"+
-				"7 : \n"+
-				"8 : \n"+
-				"9 : \n"+
-				"10 : \n", statistics.printBanditPredationEffortDistribution());
+		assertEquals(""+Constants.CRLF +
+				"1 : yy"+Constants.CRLF+
+				"2 : "+Constants.CRLF+
+				"3 : "+Constants.CRLF+
+				"4 : y"+Constants.CRLF+
+				"5 : y"+Constants.CRLF+
+				"6 : y"+Constants.CRLF+
+				"7 : "+Constants.CRLF+
+				"8 : "+Constants.CRLF+
+				"9 : "+Constants.CRLF+
+				"10 : "+Constants.CRLF, statistics.printBanditPredationEffortDistribution());
 	}
 	@Test
 	public void verifyBanditDistributionsUpdatedIfBanditPopulationUpdated() throws Exception

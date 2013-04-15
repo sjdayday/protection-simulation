@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-//TODO RoleShiftingReplicatorDynamic implements Dynamic
 public class DynamicTest
 {
 	private List<Bandit> bandits;

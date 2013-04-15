@@ -245,7 +245,7 @@ public class VariablePopulationProtectionStatistics extends
 	public String printPeasantProtectionProportionDistribution()
 	{
 		StringBuffer sb = new StringBuffer(); 
-		sb.append("\n");
+		sb.append(Constants.CRLF);
 		Set<Entry<Double, Integer>> entries = fullDistribution.entrySet(); 
 		Set<Entry<Double, Integer>> treeSet = new TreeSet<Entry<Double, Integer>>(new EntryComparator());
 		treeSet.addAll(entries); 
@@ -263,14 +263,14 @@ public class VariablePopulationProtectionStatistics extends
 			{
 				sb.append("x");
 			}
-			sb.append("\n");
+			sb.append(Constants.CRLF);
 		}
 		return sb.toString();
 	}
 	public String printBanditPredationEffortDistribution()
 	{
 		StringBuffer sb = new StringBuffer();
-		sb.append("\n");
+		sb.append(Constants.CRLF);
 		for (int i = 0; i < ProtectionParameters.MAX_PEASANTS_TO_PREY_UPON; i++)
 		{
 			sb.append(i+1); 
@@ -280,7 +280,7 @@ public class VariablePopulationProtectionStatistics extends
 			{
 				sb.append("y");
 			}
-			sb.append("\n");
+			sb.append(Constants.CRLF);
 		}
 		return sb.toString();
 	}
