@@ -30,9 +30,10 @@ public  class ProtectionEquilibriumSeeker
 		dynamics = new ArrayList<Dynamic>(); 
 		governor = new RunGovernor(this); 
 	}
-	public void runToEquilibriumOrLimit() throws BehaviorException
+	public RunGovernorEnum runToEquilibriumOrLimit() throws BehaviorException
 	{
-		while (!governor.stop())
+//			while (!governor.stop())
+		while (governor.stop().equals(RunGovernorEnum.NOT_STOPPED))
 		{
 			banditsPreyOnPeasants();
 			protectionStatistics.tick();  // dynamics need the calculated stats; we cut the record here 
@@ -41,6 +42,7 @@ public  class ProtectionEquilibriumSeeker
 			tickActors();  // perhaps periods and 
 			governor.tick(); 
 		}
+		return governor.stop(); 
 //		protectionStatistics.tick(); 
 	}
 	protected void banditsPreyOnPeasants() throws BehaviorException

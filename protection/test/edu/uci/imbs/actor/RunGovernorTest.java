@@ -1,5 +1,6 @@
 package edu.uci.imbs.actor;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -36,11 +37,11 @@ public class RunGovernorTest
 	@Test
 	public void verifyStopsWhenRunLimitReached() throws Exception
 	{
+		assertEquals(RunGovernorEnum.NOT_STOPPED, governor.stop()); 
 		ProtectionParameters.RUN_LIMIT = 2; 	
-		assertFalse(governor.stop()); 
 		governor.tick(); 
 		governor.tick(); 
-		assertTrue(governor.stop()); 
+		assertEquals(RunGovernorEnum.RUN_LIMIT_REACHED, governor.stop()); 
 	}
 	@Test
 	public void verifyStopsWhenEquilibriumReachedForSpecifiedNumberOfConsecutivePeriods() throws Exception
@@ -48,46 +49,46 @@ public class RunGovernorTest
 		ProtectionParameters.EQUILIBRIUM_NUMBER_PERIODS_WITHOUT_ADJUSTMENT = 2; 
 		seeker.setHasAdjustedThisPeriodForTesting(false); 
 		governor.tick(); 
-		assertFalse("need 2 periods",governor.stop());
+		assertEquals("need 2 periods",RunGovernorEnum.NOT_STOPPED, governor.stop()); 
 		seeker.setHasAdjustedThisPeriodForTesting(true); 
 		governor.tick(); 
-		assertFalse("counter reset if we adjust",governor.stop());
+		assertEquals("counter reset if we adjust",RunGovernorEnum.NOT_STOPPED, governor.stop()); 
 		seeker.setHasAdjustedThisPeriodForTesting(false); 
 		governor.tick(); 
-		assertFalse("1...",governor.stop());
+		assertEquals("1...",RunGovernorEnum.NOT_STOPPED, governor.stop()); 
 		governor.tick(); 
-		assertTrue("2nd consecutive period so stop now",governor.stop());
+		assertEquals("2nd consecutive period so stop now",RunGovernorEnum.RUN_LIMIT_REACHED, governor.stop()); 
 	}
 	@Test
 	public void verifyStopsWhenBanditPopulationDropsToZero() throws Exception
 	{
-		verifyPopulationSize(Population.BANDITS, 0, "0 bandits");
+		verifyPopulationSize(Population.BANDITS, 0, RunGovernorEnum.BANDITS_EXTINCT);
 	}
 	@Test
 	public void verifyStopsWhenPeasantPopulationDropsToZero() throws Exception
 	{
-		verifyPopulationSize(Population.PEASANTS, 0, "0 peasants");
+		verifyPopulationSize(Population.PEASANTS, 0, RunGovernorEnum.PEASANTS_EXTINCT);
 	}
 	@Test
 	public void verifyStopsWhenPeasantPopulationExceedsUpperLimit() throws Exception
 	{
 		ProtectionParameters.MAXIMUM_POPULATION_SIZE = 10; 
-		verifyPopulationSize(Population.PEASANTS, 13, "peasants exceed size");
+		verifyPopulationSize(Population.PEASANTS, 13, RunGovernorEnum.PEASANTS_EXCEEDED_MAX);
 	}
 	@Test
 	public void verifyStopsWhenBanditPopulationExceedsUpperLimit() throws Exception
 	{
 		
 		ProtectionParameters.MAXIMUM_POPULATION_SIZE = 10; 
-		verifyPopulationSize(Population.BANDITS, 12, "bandits exceed size");
+		verifyPopulationSize(Population.BANDITS, 12, RunGovernorEnum.BANDITS_EXCEEDED_MAX);
 	}
-	private void verifyPopulationSize(Population population, int size, String comment)
+	private void verifyPopulationSize(Population population, int size, RunGovernorEnum reason)
 	{
 		governor.tick(); 
-		assertFalse(governor.stop());
+		assertEquals(RunGovernorEnum.NOT_STOPPED, governor.stop()); 
 		if (population.equals(Population.BANDITS)) seeker.setBanditList(TestBuilder.buildBanditList(size)); 
 		else seeker.setPeasantList(TestBuilder.buildPeasantListWithRandomProtectionProportions(size, new DummyFunction())); 
-		assertTrue(comment,governor.stop());
+		assertEquals(reason, governor.stop()); 
 	}
 	private enum Population
 	{

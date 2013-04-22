@@ -8,15 +8,17 @@ public class RunGovernor
 	private int period;
 	private ProtectionEquilibriumSeeker seeker;
 	private int numberPeriodsWithEquilibrium;
+	private RunGovernorEnum reason;
 
 	public RunGovernor(ProtectionEquilibriumSeeker seeker)
 	{
 		this.seeker = seeker; 
 		period = 0; 
 		numberPeriodsWithEquilibrium = 0; 
+		this.reason = RunGovernorEnum.NOT_STOPPED; 
 	}
 
-	public boolean stop()
+	public boolean isStopping()
 	{
 		return (runLimitReached() || equilibriumReachedForSpecifiedPeriods() ||  eitherPopulationDroppedToZero() || eitherPopulationExceededMaximum());
 	}
@@ -28,12 +30,12 @@ public class RunGovernor
 	private boolean banditsExceededMaximum()
 	{
 		return stopping((seeker.getBanditList().size() > ProtectionParameters.MAXIMUM_POPULATION_SIZE), 
-				"number of bandits ("+seeker.getBanditList().size()+") exceeded maximum population size."); 
+				RunGovernorEnum.BANDITS_EXCEEDED_MAX);  
 	}
 	private boolean peasantsExceededMaximum()
 	{
 		return stopping((seeker.getPeasantList().size() > ProtectionParameters.MAXIMUM_POPULATION_SIZE), 
-				"number of peasants ("+seeker.getPeasantList().size()+") exceeded maximum population size."); 
+				RunGovernorEnum.PEASANTS_EXCEEDED_MAX);  
 	}
 	private boolean eitherPopulationDroppedToZero()
 	{
@@ -41,28 +43,33 @@ public class RunGovernor
 	}
 	private boolean peasantsDroppedToZero()
 	{
-		return stopping((seeker.getPeasantList().size() == 0), "number of peasants dropped to zero."); 
+		return stopping((seeker.getPeasantList().size() == 0), RunGovernorEnum.PEASANTS_EXTINCT); 
 	}
 	private boolean banditsDroppedToZero()
 	{
-		return stopping((seeker.getBanditList().size() == 0), "number of bandits dropped to zero."); 
+		return stopping((seeker.getBanditList().size() == 0), RunGovernorEnum.BANDITS_EXTINCT); 
 	}
 	private boolean equilibriumReachedForSpecifiedPeriods()
 	{
 		return stopping((numberPeriodsWithEquilibrium == ProtectionParameters.EQUILIBRIUM_NUMBER_PERIODS_WITHOUT_ADJUSTMENT), 
-				"equilibrium reached for specified periods."); 
+				RunGovernorEnum.EQUILIBRIUM_REACHED);
 	}
 	private boolean runLimitReached()
 	{
-		return stopping((period >= ProtectionParameters.RUN_LIMIT), "run limit reached.");
+		return stopping((period >= ProtectionParameters.RUN_LIMIT), RunGovernorEnum.RUN_LIMIT_REACHED);
 	}
-	private boolean stopping(boolean condition, String reason)
+	
+	private boolean stopping(boolean condition, RunGovernorEnum reason)
 	{
 		boolean stopping = condition;
-		if (stopping) logger.info("Stopping because "+reason); 
+		if (stopping) 
+		{
+			this.reason = reason; 
+			logger.info("Stopping because: "+reason.getReasonDescription()); 
+		}
+		else this.reason = RunGovernorEnum.NOT_STOPPED;
 		return  stopping;
 	}
-
 	public void tick()
 	{
 		this.period++; 
@@ -81,5 +88,10 @@ public class RunGovernor
 			numberPeriodsWithEquilibrium++; 
 		}
 		logger.debug("Number periods with equilibrium: "+numberPeriodsWithEquilibrium); 
+	}
+	public RunGovernorEnum stop()
+	{
+		isStopping();
+		return reason;
 	}
 }
