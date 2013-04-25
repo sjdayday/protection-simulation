@@ -128,6 +128,17 @@ public class ProtectionStatisticsTest
 		assertEquals(1, record.peasantAdjustment); 
 	}
 	@Test
+	public void verifyStaticEuilibriumTracked() throws Exception
+	{
+		assertEquals(4, statistics.numberPeasants()); 
+		assertEquals(3, statistics.numberBandits()); 
+		statistics.tick(); 
+		statistics.updatePopulations(bandits, peasants); 
+		assertEquals(4, statistics.numberPeasants()); 
+		assertEquals(3, statistics.numberBandits()); 
+		assertTrue(statistics.populationSizesUnchanged()); 
+	}
+	@Test
 	public void verifyStatisticsRecordPrinting() throws Exception
 	{
 		statistics.setPayoffDiscrepancyTolerance(.01);

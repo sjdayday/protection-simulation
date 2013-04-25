@@ -57,7 +57,7 @@ public class RunGovernorTest
 		governor.tick(); 
 		assertEquals("1...",RunGovernorEnum.NOT_STOPPED, governor.stop()); 
 		governor.tick(); 
-		assertEquals("2nd consecutive period so stop now",RunGovernorEnum.RUN_LIMIT_REACHED, governor.stop()); 
+		assertEquals("2nd consecutive period so stop now",RunGovernorEnum.EQUILIBRIUM_REACHED, governor.stop()); 
 	}
 	@Test
 	public void verifyStopsWhenBanditPopulationDropsToZero() throws Exception

@@ -21,6 +21,7 @@ public class ProtectionStatistics
 	protected List<Peasant> peasants;
 	protected List<Bandit> bandits;
 	protected double adjustmentPercentage;
+	private boolean populationSizesUnchanged;
 
 	public ProtectionStatistics(List<Bandit> bandits, List<Peasant> peasants)
 	{
@@ -85,14 +86,39 @@ public class ProtectionStatistics
 	{
 		setPeasants(peasants);
 		setBandits(bandits);
-		int size = getStatisticsRecords().size(); 
-		if (size > 0) 
-		{
-			getStatisticsRecords().get(size-1).numberBanditsAfterReplication = bandits.size(); 
-			getStatisticsRecords().get(size-1).numberPeasantsAfterReplication = peasants.size(); 
-			logger.debug("populations after replications updated."); 
-		}
+		updateLastRecordAndCheckForStaticPopulation(bandits, peasants); 
 		logger.debug("populations updated.");
+	}
+	private void updateLastRecordAndCheckForStaticPopulation(
+			List<Bandit> bandits, List<Peasant> peasants)
+	{
+		StatisticsRecord record = getLastStatisticsRecord(); 
+		if (record != null)
+		{
+			record.numberBanditsAfterReplication = bandits.size(); 
+			record.numberPeasantsAfterReplication = peasants.size(); 
+			checkPopulationStatic(record);
+		logger.debug("populations after replications updated.");
+		}
+	}
+	private void checkPopulationStatic(StatisticsRecord record)
+	{
+		if ((record.numberBandits == record.numberBanditsAfterReplication) &&
+			(record.numberPeasants == record.numberPeasantsAfterReplication) &&
+			(record.numberBandits != 0) &&
+			(record.numberPeasants != 0))
+		{
+			populationSizesUnchanged = true;
+		}
+		else
+		{
+			populationSizesUnchanged = false; 
+		}
+	}
+	private StatisticsRecord getLastStatisticsRecord()
+	{
+		int last = getStatisticsRecords().size()-1; 
+		return (last >= 0) ? getStatisticsRecords().get(last) : null;
 	}
 	public int getAdjustmentFactor()
 	{
@@ -168,5 +194,9 @@ public class ProtectionStatistics
 	public void setBandits(List<Bandit> bandits)
 	{
 		this.bandits = bandits;
+	}
+	public boolean populationSizesUnchanged() 
+	{
+		return populationSizesUnchanged;
 	}
 }
