@@ -9,6 +9,7 @@ public class RunGovernor
 	private ProtectionEquilibriumSeeker seeker;
 	private int numberPeriodsWithEquilibrium;
 	private RunGovernorEnum reason;
+	private boolean populationSizesUnchanged;
 
 	public RunGovernor(ProtectionEquilibriumSeeker seeker)
 	{
@@ -51,14 +52,17 @@ public class RunGovernor
 	}
 	private boolean equilibriumReachedForSpecifiedPeriods()
 	{
-		return stopping((numberPeriodsWithEquilibrium == ProtectionParameters.EQUILIBRIUM_NUMBER_PERIODS_WITHOUT_ADJUSTMENT), 
-				RunGovernorEnum.EQUILIBRIUM_REACHED);
+		if (numberPeriodsWithEquilibrium == ProtectionParameters.EQUILIBRIUM_NUMBER_PERIODS_WITHOUT_ADJUSTMENT)
+		{
+			if (populationSizesUnchanged) return stopping(true, RunGovernorEnum.STATIC_EQUILIBRIUM_REACHED);
+			else return stopping(true, RunGovernorEnum.EQUILIBRIUM_REACHED); 
+		}
+		else return stopping(false, RunGovernorEnum.NOT_STOPPED); //TODO maybe refactor stopping()  
 	}
 	private boolean runLimitReached()
 	{
 		return stopping((period >= ProtectionParameters.RUN_LIMIT), RunGovernorEnum.RUN_LIMIT_REACHED);
 	}
-	
 	private boolean stopping(boolean condition, RunGovernorEnum reason)
 	{
 		boolean stopping = condition;
@@ -82,10 +86,13 @@ public class RunGovernor
 		if (seeker.hasAdjustedThisPeriod())
 		{
 			numberPeriodsWithEquilibrium = 0; 
+			populationSizesUnchanged = false; 
 		}
 		else 
 		{
 			numberPeriodsWithEquilibrium++; 
+			if (seeker.populationSizesUnchanged()) populationSizesUnchanged = true;
+			else populationSizesUnchanged = false;
 		}
 		logger.debug("Number periods with equilibrium: "+numberPeriodsWithEquilibrium); 
 	}

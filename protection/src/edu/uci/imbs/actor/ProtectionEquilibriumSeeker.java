@@ -137,5 +137,9 @@ public  class ProtectionEquilibriumSeeker
 		if (protectionStatistics.getPeasantAdjustment() != 0) return true;  
 		else return false; 
 	}
+	public boolean populationSizesUnchanged()
+	{
+		return protectionStatistics.populationSizesUnchanged();
+	}
 
 }

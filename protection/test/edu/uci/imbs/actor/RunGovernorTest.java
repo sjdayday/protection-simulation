@@ -1,8 +1,6 @@
 package edu.uci.imbs.actor;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -44,7 +42,21 @@ public class RunGovernorTest
 		assertEquals(RunGovernorEnum.RUN_LIMIT_REACHED, governor.stop()); 
 	}
 	@Test
-	public void verifyStopsWhenEquilibriumReachedForSpecifiedNumberOfConsecutivePeriods() throws Exception
+	public void verifyStopsWhenEquilibriumReachedForSpecifiedNumberOfConsecutivePeriodsWithPopulationChange() throws Exception
+	{
+		boolean populationSizeUnchanged = false; 
+		RunGovernorEnum stopCode = checkGeneralEquilibriumTracksConsecutivePeriodsWithNoAdjustment(populationSizeUnchanged); 
+		assertEquals("2nd consecutive period so stop now",RunGovernorEnum.EQUILIBRIUM_REACHED, stopCode);
+	}
+	@Test
+	public void verifyStopsWhenEquilibriumReachedForSpecifiedNumberOfConsecutivePeriodsWithStaticPopulation() throws Exception
+	{
+		boolean populationSizeUnchanged = true; 
+		RunGovernorEnum stopCode = checkGeneralEquilibriumTracksConsecutivePeriodsWithNoAdjustment(populationSizeUnchanged); 
+		assertEquals("2nd consecutive period, and population unchanged so stop now with static equilibrium",
+				RunGovernorEnum.STATIC_EQUILIBRIUM_REACHED, stopCode);
+	}
+	private RunGovernorEnum checkGeneralEquilibriumTracksConsecutivePeriodsWithNoAdjustment(boolean populationSizeUnchanged)
 	{
 		ProtectionParameters.EQUILIBRIUM_NUMBER_PERIODS_WITHOUT_ADJUSTMENT = 2; 
 		seeker.setHasAdjustedThisPeriodForTesting(false); 
@@ -55,9 +67,10 @@ public class RunGovernorTest
 		assertEquals("counter reset if we adjust",RunGovernorEnum.NOT_STOPPED, governor.stop()); 
 		seeker.setHasAdjustedThisPeriodForTesting(false); 
 		governor.tick(); 
-		assertEquals("1...",RunGovernorEnum.NOT_STOPPED, governor.stop()); 
+		assertEquals("1...",RunGovernorEnum.NOT_STOPPED, governor.stop());
+		seeker.setArePopulationSizesUnchangedForTesting(populationSizeUnchanged); 
 		governor.tick(); 
-		assertEquals("2nd consecutive period so stop now",RunGovernorEnum.EQUILIBRIUM_REACHED, governor.stop()); 
+		return governor.stop(); 
 	}
 	@Test
 	public void verifyStopsWhenBanditPopulationDropsToZero() throws Exception
@@ -99,14 +112,25 @@ public class RunGovernorTest
 	{
 		
 		private boolean adjusted = true;
+		private boolean unchanged;
 		public TestingSeeker()
 		{
 			
 		}
 		
+		public void setArePopulationSizesUnchangedForTesting(boolean b)
+		{
+			this.unchanged = b; 
+		}
+
 		public void setHasAdjustedThisPeriodForTesting(boolean b)
 		{
 			this.adjusted = b; 
+		}
+		@Override
+		public boolean populationSizesUnchanged()
+		{
+			return unchanged;
 		}
 		@Override
 		public boolean hasAdjustedThisPeriod()
