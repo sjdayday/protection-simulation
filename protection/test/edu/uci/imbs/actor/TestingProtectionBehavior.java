@@ -72,19 +72,7 @@ public class TestingProtectionBehavior implements ProtectionBehavior
 	}
 
 	@Override
-	public void setLastStanding(Heritable heritable)
-	{
-	}
-
-	@Override
 	public void tick()
 	{
 	}
-
-	@Override
-	public Heritable getLastStanding()
-	{
-		return null;
-	}
-	
 }

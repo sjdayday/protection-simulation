@@ -110,10 +110,6 @@ public class BehaviorPeasantDefendsAgainstMultipleBandits extends AbstractBehavi
 		return 0;
 	}
 	@Override
-	public void setLastStanding(Heritable heritable)
-	{
-	}
-	@Override
 	public void tick()
 	{
 	}

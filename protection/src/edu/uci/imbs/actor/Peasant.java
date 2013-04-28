@@ -3,7 +3,6 @@ package edu.uci.imbs.actor;
 
 public class Peasant extends Actor implements Heritable
 {
-	protected static Heritable LAST_STANDING;
 	private double protectionProportion;
 	private double workProportion;
 	private double protection;
@@ -168,15 +167,5 @@ public class Peasant extends Actor implements Heritable
 	{
 		if (this.protectionBehavior == null) protectionBehavior = (ProtectionBehavior) BehaviorEnum.PEASANT_DEFENDS_AGAINST_MULTIPLE_BANDITS.build(this); 
 		return protectionBehavior; 
-	}
-	@Override
-	public void setLastStanding(Heritable peasant)
-	{
-		LAST_STANDING = peasant; 
-	}
-	@Override
-	public Heritable getLastStanding()
-	{
-		return LAST_STANDING;
 	}
 }

@@ -2,7 +2,6 @@ package edu.uci.imbs.actor;
 
 public class Bandit extends Actor implements Heritable
 {
-	protected static Heritable LAST_STANDING;
 	private double payoff;
 	private PredationBehavior predationBehavior;
 	public Bandit(Bandit bandit)
@@ -66,15 +65,5 @@ public class Bandit extends Actor implements Heritable
 			behaviors.add(predationBehavior);
 		}
 		return predationBehavior;
-	}
-	@Override
-	public void setLastStanding(Heritable peasant)
-	{
-		LAST_STANDING = peasant; 
-	}
-	@Override
-	public Heritable getLastStanding()
-	{
-		return LAST_STANDING;
 	}
 }

@@ -84,14 +84,23 @@ public class RoleShiftingReplicatorDynamicTest
 		assertEquals(2, population.getPeasants().size());
 	}
 	@Test
-	public void verifyNewActorBuiltIfNoneLeft() throws Exception
+	public void verifyNoMimicryIfLowerPerformingPopulationIsEmpty() throws Exception
 	{
-		((Heritable) peasants.get(0)).setLastStanding((Heritable) peasants.get(0)); // set by ReplicatorDynamic.DIE 
 		population = new ProtectionPopulation(bandits, new ArrayList<Peasant>()); 
 		stats = new TestingStatistics(bandits, peasants, 1); 
 		dynamic = new RoleShiftingReplicatorDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
+		assertEquals("original bandit list size unchanged",3,population.getBandits().size()); 
+		assertEquals("no peasants created",0,population.getPeasants().size()); 
+
+		population = new ProtectionPopulation(new ArrayList<Bandit>(), peasants); 
+		stats = new TestingStatistics(bandits, peasants, -1); 
+		dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		dynamic.setPopulation(population); 
+		population = dynamic.rebuildPopulation(); 
+		assertEquals("original peasant list size unchanged",4,population.getPeasants().size()); 
+		assertEquals("no bandits created",0,population.getBandits().size()); 
 	}
 	
 	private Dynamic getRoleShiftingReplicatorDynamicWithForcedPayoffs()

@@ -82,17 +82,5 @@ public class BanditTest
 		assertEquals("now inherit number of targets from old bandit's behavior",6, ((BehaviorBanditPreysOnMultiplePeasants) newBehavior).getNumberOfPeasantsToPreyUpon()); 
 		assertEquals("...but not the old behavior's targets",0, newBehavior.getTargets().size()); 
 	}
-	@Test
-	public void verifyLastBanditStandingCanBeStoredForLaterReferenceTerribleHack() throws Exception
-	{	
-		//FIXME how else do we rebuild peasants when there are none left following ReplicatorDynamic?  
-		behavior = bandit.getPredationBehavior(); 
-		assertEquals(6, ((BehaviorBanditPreysOnMultiplePeasants) behavior).getNumberOfPeasantsToPreyUpon()); 
-		bandit.setLastStanding(bandit); 
-		Bandit newBandit = new Bandit();
-		Bandit newBandit2 = new Bandit((Bandit) newBandit.getLastStanding());
-		assertEquals(6, ((BehaviorBanditPreysOnMultiplePeasants) newBandit2.getPredationBehavior()).getNumberOfPeasantsToPreyUpon()); 
-	}
-
 }
 

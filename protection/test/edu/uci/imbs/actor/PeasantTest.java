@@ -159,26 +159,6 @@ public class PeasantTest
 		assertEquals(.222d, peasant.getPayoff(), .001); 
 	}
 	@Test
-	public void verifyLastPeasantStandingCanBeStoredForLaterReferenceTerribleHack() throws Exception
-	{	
-		//FIXME how else do we rebuild peasants when there are none left following ReplicatorDynamic?  
-		peasant.setLastStanding(peasant);
-		Heritable newPeasant = new Peasant(); 
-		Peasant newPeasant2 = new Peasant((Peasant) newPeasant.getLastStanding()); 
-		assertEquals(2, newPeasant2.getFunction().getParameters()[0], .001); 
-	}
-	@Test
-	public void verifyLastStandingIsDifferentForPeasantsThanForBandits() throws Exception
-	{
-		peasant.setLastStanding(peasant);
-		Bandit bandit = new Bandit(); 
-		bandit.setLastStanding(bandit); 
-		Peasant newPeasant = new Peasant(); 
-		newPeasant.inherit(newPeasant.getLastStanding()); 
-		assertEquals("inherit from the saved peasant, not the saved bandit",2, newPeasant.getFunction().getParameters()[0], .001); 
-		
-	}
-	@Test
 	public void verifyAppropriateDefensiveBehaviorElicitedByPredatoryBehavior() throws Exception
 	{
 		ProtectionBehavior behavior = peasant.getProtectionBehavior(); //BehaviorEnum.BANDIT_PREYS_ON_MULTIPLE_PEASANTS.build(new Bandit())); 

@@ -32,7 +32,9 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 	protected void adjustPeasantsAndBanditsInOppositeDirections(int adjust)
 	{
 		refreshListsOfPeasantsAndBandits();
-
+		
+		if (eitherPopulationIsEmpty()) return;
+		
 		if (ProtectionParameters.MIMIC_BETTER_PERFORMING_POPULATION)
 		{
 			if (adjust > 0) movePeasantsToBandits(adjust); 
@@ -44,6 +46,11 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 			else movePeasantsToBandits(adjust*-1); 
 		}
 		protectionPopulation = new ProtectionPopulation(bandits, peasants);
+	}
+	private boolean eitherPopulationIsEmpty()
+	{
+		if ((protectionPopulation.getBandits().size() == 0) || (protectionPopulation.getPeasants().size() == 0)) return true;  
+		else return false;
 	}
 	public void refreshListsOfPeasantsAndBandits()
 	{
@@ -96,10 +103,12 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 		if (lastPeasantIndex >= 0) return new Peasant(peasants.get(lastPeasantIndex));
 		else 
 		{
-			//TODO see Peasant; we need a better way
-			Peasant peasant = new Peasant();
-			peasant.inherit(peasant.getLastStanding()); 
-			return peasant; 
+			throw new RuntimeException("RoleShiftingReplicatorDynamic.buildPeasant:  Not expecting to need Last Standing logic but attempted to replicate from empty list of Peasants.");
+			//TODO delete this once a few scenarios have run
+//			//TODO see Peasant; we need a better way
+//			Peasant peasant = new Peasant();
+//			peasant.inherit(peasant.getLastStanding()); 
+//			return peasant; 
 		}
 	}
 }

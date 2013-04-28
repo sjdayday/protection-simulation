@@ -35,14 +35,4 @@ public abstract class AbstractBehavior implements Behavior
 		else throw new IllegalArgumentException(msg+type);
 	}
 
-	@Override
-	public void setLastStanding(Heritable heritable)
-	{
-	}
-
-	@Override
-	public Heritable getLastStanding()
-	{
-		return null;
-	}
 }

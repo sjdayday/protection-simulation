@@ -67,6 +67,37 @@ public class ReplicatorDynamicTest
 		assertEquals("all peasants replicate twice because over thrive threshold", 6, newPeasants.size());
 		verifyOnePeasantInheritedValuesCorrectly(); 
 	}
+	@Test
+	public void verifyPopulationReplicatesToZeroWithoutActorToCopyFrom() throws Exception
+	{
+		assertEquals(3, peasants.size()); 
+		fitnessFunction.setSurviveThreshold(.75); 
+		newPeasants = new ArrayList<Peasant>(); 
+
+		List<Bandit> bandits = TestBuilder.buildBanditList();  
+		List<Bandit> newBandits = new ArrayList<Bandit>(); 
+		verifyTargetNumbers(bandits); 
+	
+		replicatorDynamic.replicate(Peasant.class, peasants, newPeasants);  
+		assertEquals("no peasants replicate because under survive threshold", 0, newPeasants.size());
+		
+		fitnessFunction = new FitnessFunction(); 
+		replicatorDynamic = new ReplicatorDynamic();
+		replicatorDynamic.setFitnessFunction(fitnessFunction); 
+		fitnessFunction.setSurviveThreshold(0.0); 
+		replicatorDynamic.replicate(Bandit.class, bandits, newBandits);  
+		assertEquals(3, newBandits.size());
+		verifyTargetNumbers(newBandits); 
+//		ProtectionPopulation protectionPopulation = new ProtectionPopulation(banditList, peasantList); 
+//		for (Dynamic dynamic : dynamics)
+//		{
+//			dynamic.setPopulation(protectionPopulation);
+//			protectionPopulation = dynamic.rebuildPopulation(); 
+//		}
+//		banditList = protectionPopulation.getBandits(); 
+//		peasantList = protectionPopulation.getPeasants(); 
+
+	}
 	public void verifyOnePeasantInheritedValuesCorrectly()
 	{
 		peasant = newPeasants.get(0);

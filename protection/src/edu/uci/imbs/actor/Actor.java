@@ -102,16 +102,4 @@ public class Actor implements Heritable
 	{
 		return 0;
 	}
-
-	@Override
-	public void setLastStanding(Heritable heritable)
-	{
-		//TODO since we pushed this down, consider making the methods and the class abstract
-	}
-
-	@Override
-	public Heritable getLastStanding()
-	{
-		return null;
-	}
 }

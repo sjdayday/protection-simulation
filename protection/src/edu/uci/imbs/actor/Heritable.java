@@ -6,8 +6,4 @@ public interface Heritable
 
 	public double getPayoff();
 
-	public void setLastStanding(Heritable heritable);
-
-	public abstract Heritable getLastStanding();
-	
 }

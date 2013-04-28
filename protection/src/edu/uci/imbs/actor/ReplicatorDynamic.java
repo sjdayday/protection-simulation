@@ -25,7 +25,6 @@ public class ReplicatorDynamic
 			{
 				logger.debug("Actor about to die: "+heritable.toString()); 
 				// nothing replicated to new list
-				heritable.setLastStanding(heritable); //TODO anything about this hack to save actors for creation later if there are none left?
 			}
 				break;
 			case SURVIVE: 

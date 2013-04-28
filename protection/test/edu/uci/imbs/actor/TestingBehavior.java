@@ -36,25 +36,21 @@ public class TestingBehavior extends AbstractBehavior implements Behavior
 	}
 
 	@Override
-	public void inherit(Heritable heritable)
-	{
-	}
-
-	@Override
 	public double getPayoff()
 	{
 		return 0;
 	}
 
-	@Override
-	public void setLastStanding(Heritable heritable)
-	{
-	}
 
 	@Override
 	public void tick()
 	{
 		hasTicked = true; 
+	}
+
+	@Override
+	public void inherit(Heritable heritable)
+	{
 	}
 	
 }

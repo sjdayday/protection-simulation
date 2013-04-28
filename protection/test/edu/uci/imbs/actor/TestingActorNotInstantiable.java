@@ -30,12 +30,4 @@ public class TestingActorNotInstantiable extends Actor implements Heritable
 	{
 		return 1;
 	}
-	@Override
-	public void setLastStanding(Heritable heritable)
-	{
-	}
-	public Heritable getLastStanding()
-	{
-		return null;
-	}
 }

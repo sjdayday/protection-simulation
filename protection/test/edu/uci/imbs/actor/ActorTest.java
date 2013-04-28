@@ -125,14 +125,5 @@ public class ActorTest
 		{
 			return super.equals(obj);
 		}
-		@Override
-		public void setLastStanding(Heritable peasant)
-		{
-		}
-		@Override
-		public Heritable getLastStanding()
-		{
-			return null; 
-		}
 	}
 }
