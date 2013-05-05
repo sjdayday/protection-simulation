@@ -10,10 +10,10 @@ public class StatisticsRecord
 	public int numberPeasantsAfterReplication;
 	public final double averageBanditPayoff;
 	public final double averagePeasantPayoff;
-	public final int peasantAdjustment;
+	public final int actorAdjustment;
 	private double banditPeasantPayoffDelta;
 
-	public StatisticsRecord(int period, int numberBandits, int numberPeasants, double averageBanditPayoff, double averagePeasantPayoff, double banditPeasantPayoffDelta, int peasantAdjustment)
+	public StatisticsRecord(int period, int numberBandits, int numberPeasants, double averageBanditPayoff, double averagePeasantPayoff, double banditPeasantPayoffDelta, int actorAdjustment)
 	{
 		this.period = period;  
 		this.numberBandits = numberBandits; 
@@ -21,8 +21,9 @@ public class StatisticsRecord
 		this.averageBanditPayoff = averageBanditPayoff; 
 		this.averagePeasantPayoff = averagePeasantPayoff;
 		this.banditPeasantPayoffDelta = banditPeasantPayoffDelta; 
-		this.peasantAdjustment = peasantAdjustment; 
+		this.actorAdjustment = actorAdjustment; 
 	}
+	
 	@Override
 	public String toString()
 	{
@@ -43,8 +44,8 @@ public class StatisticsRecord
 		sb.append(averagePeasantPayoff);
 		sb.append(", Bandit-Peasant Payoff Delta=");
 		sb.append(banditPeasantPayoffDelta);
-		sb.append(", Peasant Adjustment=");
-		sb.append(peasantAdjustment);
+		sb.append(", Actor Adjustment=");
+		sb.append(actorAdjustment);
 		printAdditionalFields(sb); 
 		return sb.toString();
 	}

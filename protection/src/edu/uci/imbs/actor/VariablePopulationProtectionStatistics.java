@@ -238,7 +238,7 @@ public class VariablePopulationProtectionStatistics extends
 	@Override
 	protected void buildStatisticsRecord()
 	{
-		variableStatisticsRecords.add(new VariablePopulationStatisticsRecord(period, numberBandits, numberPeasants, averageBanditPayoff, averagePeasantPayoff, banditPeasantPayoffDelta, peasantAdjustment, 
+		variableStatisticsRecords.add(new VariablePopulationStatisticsRecord(period, numberBandits, numberPeasants, averageBanditPayoff, averagePeasantPayoff, banditPeasantPayoffDelta, actorAdjustment, 
 				averagePeasantProtectionProportion, medianPeasantProtectionProportion, modePeasantProtectionProportion, averageBanditNumberPeasantsToPreyUpon, medianBanditNumberPeasantsToPreyUpon, modeBanditNumberPeasantsToPreyUpon)); 
 		logger.debug("statistics record added: "+variableStatisticsRecords.size());
 	}

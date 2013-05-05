@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 
 public class ProtectionStatistics
 {
+	protected static final int PEASANT = 1;
+	protected static final int BANDIT = 2;
 	private static Logger logger = Logger.getLogger(ProtectionStatistics.class);
 	private double payoffDiscrepancyTolerance;
 	public  int period;
@@ -14,7 +16,7 @@ public class ProtectionStatistics
 	public  int numberPeasants;
 	public  double averageBanditPayoff;
 	public  double averagePeasantPayoff;
-	public  int peasantAdjustment;
+	public  int actorAdjustment;
 	public double banditPeasantPayoffDelta;
 
 	protected List<StatisticsRecord> statisticsRecords;
@@ -78,8 +80,8 @@ public class ProtectionStatistics
 	{
 		int adjustment = 0; 
 		if (Math.abs(averageBanditPayoff - averagePeasantPayoff) <= payoffDiscrepancyTolerance) adjustment = 0; 
-		else  adjustment = (averageBanditPayoff > averagePeasantPayoff) ? (1 * getAdjustmentFactor()) : (-1 * getAdjustmentFactor());
-		peasantAdjustment = adjustment; 
+		else  adjustment = (averageBanditPayoff > averagePeasantPayoff) ? (getActorAdjustmentFactor(PEASANT)) : (getActorAdjustmentFactor(BANDIT));
+		actorAdjustment = adjustment; 
 	}
 	public void updatePopulations(List<Bandit> bandits,
 			List<Peasant> peasants)
@@ -115,16 +117,25 @@ public class ProtectionStatistics
 			populationSizesUnchanged = false; 
 		}
 	}
-	private StatisticsRecord getLastStatisticsRecord()
+	protected StatisticsRecord getLastStatisticsRecord()
 	{
 		int last = getStatisticsRecords().size()-1; 
 		return (last >= 0) ? getStatisticsRecords().get(last) : null;
 	}
-	public int getAdjustmentFactor()
+	protected int getActorAdjustmentFactor(int actor)
 	{
-		Double factor = numberPeasants * adjustmentPercentage;
-		if ((factor) < 1d) return 1;  
-		else return factor.intValue();
+		Double factor = 0d; 
+		if (actor == PEASANT) 
+		{
+			factor = numberPeasants * adjustmentPercentage;
+			if ((factor) < 1d) return 1;  
+		}
+		else 
+		{
+			factor = -1 * numberBandits * adjustmentPercentage;
+			if ((factor) > -1d) return -1;  
+		}
+		return factor.intValue();
 	}
 	public void setAdjustmentFactorPercentage(double percentage)
 	{
@@ -162,9 +173,9 @@ public class ProtectionStatistics
 	{
 		return payoffDiscrepancyTolerance;
 	}
-	public int getPeasantAdjustment()
+	public int getActorAdjustment()
 	{
-		return peasantAdjustment;
+		return actorAdjustment;
 	}
 	public int numberPeriods()
 	{
@@ -172,7 +183,7 @@ public class ProtectionStatistics
 	}
 	protected void buildStatisticsRecord()
 	{
-		statisticsRecords.add(new StatisticsRecord(period, numberBandits, numberPeasants, averageBanditPayoff, averagePeasantPayoff, banditPeasantPayoffDelta, peasantAdjustment)); 
+		statisticsRecords.add(new StatisticsRecord(period, numberBandits, numberPeasants, averageBanditPayoff, averagePeasantPayoff, banditPeasantPayoffDelta, actorAdjustment)); 
 		logger.debug("statistics record added: "+statisticsRecords.size());  
 	}
 	public List<? extends StatisticsRecord> getStatisticsRecords()

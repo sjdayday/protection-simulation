@@ -54,6 +54,7 @@ public class ReplicatorDynamic
 		{
 			heritable = clazz.newInstance();
 			((Heritable) heritable).inherit(oldHeritable); //TODO smartguys: can generics do away with this cast? 
+			logger.debug("New actor replicated:"+heritable.toString()+" inheriting from: "+oldHeritable.toString()); 
 		}
 		catch (Exception e)
 		{

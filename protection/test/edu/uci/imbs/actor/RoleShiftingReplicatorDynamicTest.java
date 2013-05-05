@@ -27,6 +27,7 @@ public class RoleShiftingReplicatorDynamicTest
 	@Test
 	public void verifyShiftsBanditsToPeasantsByOne() throws Exception
 	{
+		//TODO consider dropping support for this.
 		stats = new TestingStatistics(bandits, peasants, 1); 
 		Dynamic dynamic = new RoleShiftingReplicatorDynamic(stats); 
 		dynamic.setPopulation(population); 
@@ -127,7 +128,7 @@ public class RoleShiftingReplicatorDynamicTest
 			this.adjust = adjust;  
 		}
 		@Override
-		public int getPeasantAdjustment()
+		public int getActorAdjustment()
 		{
 			return adjust;
 		}

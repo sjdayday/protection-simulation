@@ -20,7 +20,7 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 	@Override
 	public ProtectionPopulation rebuildPopulation()
 	{
-		int adjustment = statistics.getPeasantAdjustment();
+		int adjustment = statistics.getActorAdjustment();
 		if (adjustment != 0) adjustPeasantsAndBanditsInOppositeDirections(adjustment); 
 		return protectionPopulation;
 	}

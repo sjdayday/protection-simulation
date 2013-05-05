@@ -181,7 +181,7 @@ public class ProtectionEquilibriumSeekerVariablePopulationTest
 		List<? extends StatisticsRecord> records = statistics.getStatisticsRecords(); 
 		for (StatisticsRecord statisticsRecord : records)
 		{
-			System.out.println(statisticsRecord.toString()+" peasant adjustment: "+statisticsRecord.peasantAdjustment); 
+			System.out.println(statisticsRecord.toString()+" peasant adjustment: "+statisticsRecord.actorAdjustment); 
 		}
 	}
 	public void printPeasants(List<Peasant> peasants)

@@ -40,23 +40,23 @@ public class ProtectionStatisticsTest
 	public void verifyAdjustmentFactorCalculatedAsPercentageOfPopulationSize() throws Exception
 	{
 		
-		assertEquals("factor not set defaults to 1", 1, statistics.getAdjustmentFactor()); 
+		assertEquals("factor not set defaults to 1", 1, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 		verifyExpectedErrorReceived("numbers out of percentage range forced to 1", -.5d); 
 		verifyExpectedErrorReceived("numbers out of percentage range forced to 1", 1.5d); 
 		statistics.setAdjustmentFactorPercentage(0);
-		assertEquals("zero forced to 1", 1, statistics.getAdjustmentFactor()); 
+		assertEquals("zero forced to 1", 1, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 		statistics.setAdjustmentFactorPercentage(.1);
-		assertEquals("low numbers rounded up to 1",1, statistics.getAdjustmentFactor()); 
+		assertEquals("low numbers rounded up to 1",1, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 		statistics.setAdjustmentFactorPercentage(.25);
-		assertEquals("1 of 4 = 1",1, statistics.getAdjustmentFactor()); 
+		assertEquals("1 of 4 = 1",1, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 		statistics.setAdjustmentFactorPercentage(.49);
-		assertEquals("1.99 of 4 = 1",1, statistics.getAdjustmentFactor()); 
+		assertEquals("1.99 of 4 = 1",1, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 		statistics.setAdjustmentFactorPercentage(.5);
-		assertEquals("2 of 4 = 2",2, statistics.getAdjustmentFactor()); 
+		assertEquals("2 of 4 = 2",2, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 		statistics.setAdjustmentFactorPercentage(.99);
-		assertEquals("3.99 of 4 = 3",3, statistics.getAdjustmentFactor()); 
+		assertEquals("3.99 of 4 = 3",3, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 		statistics.setAdjustmentFactorPercentage(1.0);
-		assertEquals("4 of 4 = 4",4, statistics.getAdjustmentFactor()); 
+		assertEquals("4 of 4 = 4",4, statistics.getActorAdjustmentFactor(ProtectionStatistics.PEASANT)); 
 	}
 	private void verifyExpectedErrorReceived(String msg, double percentage)
 	{
@@ -76,7 +76,7 @@ public class ProtectionStatisticsTest
 		statistics.setPayoffDiscrepancyTolerance(.01);
 		banditsPreyOnPeasants();
 		statistics.tick(); 
-		assertEquals("average bandit payoff is higher", 1, statistics.getPeasantAdjustment());
+		assertEquals("average bandit payoff is higher", 1, statistics.getActorAdjustment());
 		adjustPeasantsAndBanditsInOppositeDirectionsAndTick(1); 
 		assertEquals(2, bandits.size());
 		assertEquals(5, peasants.size());
@@ -84,10 +84,10 @@ public class ProtectionStatisticsTest
 		statistics.tick(); 
 		assertEquals("2 have .125, 3 have .5, total 1.75 / 5", .35, statistics.averagePeasantPayoff(), .001);
 		assertEquals("2 have payoff .375",.375, statistics.averageBanditPayoff(), .001); 
-		assertEquals("average bandit payoff is higher", 1, statistics.getPeasantAdjustment());
+		assertEquals("average bandit payoff is higher", 1, statistics.getActorAdjustment());
 		statistics.setPayoffDiscrepancyTolerance(.03);
 		statistics.calculateForTesting(); 
-		assertEquals("average bandit payoff is higher but within the new tolerance", 0, statistics.getPeasantAdjustment());
+		assertEquals("average bandit payoff is higher but within the new tolerance", 0, statistics.getActorAdjustment());
 		adjustPeasantsAndBanditsInOppositeDirectionsAndTick(1); 
 		assertEquals(1, bandits.size());
 		assertEquals(6, peasants.size());
@@ -95,7 +95,7 @@ public class ProtectionStatisticsTest
 		statistics.tick(); 
 		assertEquals("1 have .125, 5 have .5, total 2.625 / 6", .437, statistics.averagePeasantPayoff(), .001);
 		assertEquals("1 have payoff .375",.375, statistics.averageBanditPayoff(), .001); 
-		assertEquals("average peasant payoff is higher", -1, statistics.getPeasantAdjustment());
+		assertEquals("average peasant payoff is higher", -1, statistics.getActorAdjustment());
 	}
 	@Test
 	public void verifyOneStatisticsRecordAccumulatedPerTimePeriod() throws Exception
@@ -113,8 +113,8 @@ public class ProtectionStatisticsTest
 		assertEquals(4, record.numberPeasants); 
 		assertEquals(0.375, record.averageBanditPayoff, .001); 
 		assertEquals(0.218, record.averagePeasantPayoff, .001); 
-		assertEquals(1, record.peasantAdjustment); 
-		adjustPeasantsAndBanditsInOppositeDirectionsAndTick(statistics.getPeasantAdjustment()); 
+		assertEquals(1, record.actorAdjustment); 
+		adjustPeasantsAndBanditsInOppositeDirectionsAndTick(statistics.getActorAdjustment()); 
 		banditsPreyOnPeasants();
 		statistics.tick(); 
 		assertEquals(3, statistics.numberPeriods()); 
@@ -125,7 +125,49 @@ public class ProtectionStatisticsTest
 		assertEquals(5, record.numberPeasants); 
 		assertEquals(0.375, record.averageBanditPayoff, .001); 
 		assertEquals(0.35, record.averagePeasantPayoff, .001); 
-		assertEquals(1, record.peasantAdjustment); 
+		assertEquals(1, record.actorAdjustment); 
+	}
+	@Test
+	public void verifyActorAdjustmentCalculatedAgainstWorsePerformingPopulationAndPeasantsArePositiveAndBanditsAreNegative() throws Exception
+	{
+		StatisticsRecord record = null; 
+		statistics.setPayoffDiscrepancyTolerance(.01);
+		statistics.setAdjustmentFactorPercentage(.5);
+		record = setUpAdjustmentTestWithBanditListOfSize(3); 
+		assertEquals(4, record.numberPeasants); 
+		assertEquals(3, record.numberBandits); 
+		assertEquals(0.375, record.averageBanditPayoff, .001); 
+		assertEquals(0.218, record.averagePeasantPayoff, .001); 
+		assertEquals("peasants doing worse, shift 50% of 4 peasants",2, record.actorAdjustment); 
+		record = setUpAdjustmentTestWithBanditListOfSize(8); 
+		assertEquals(4, record.numberPeasants); 
+		assertEquals("bandits are larger population but still doing better so adjustment will calculate against peasants",8, record.numberBandits); 
+		assertEquals(0.187, record.averageBanditPayoff, .001); 
+		assertEquals(0.125, record.averagePeasantPayoff, .001); 
+		assertEquals("peasants still doing worse, shift 50% of 4 peasants",2, record.actorAdjustment); 
+		record = setUpAdjustmentTestWithBanditListOfSize(16); 
+		assertEquals(4, record.numberPeasants); 
+		assertEquals(16, record.numberBandits); 
+		assertEquals(0.093, record.averageBanditPayoff, .001); 
+		assertEquals(0.125, record.averagePeasantPayoff, .001); 
+		assertEquals("bandits doing worse, shift 50% of 16 bandits",-8, record.actorAdjustment); 
+		statistics.setAdjustmentFactorPercentage(1.0);
+		record = setUpAdjustmentTestWithBanditListOfSize(1); 
+		assertEquals(4, record.numberPeasants); 
+		assertEquals(1, record.numberBandits); 
+		assertEquals(0.375, record.averageBanditPayoff, .001); 
+		assertEquals(0.406, record.averagePeasantPayoff, .001); 
+		assertEquals("bandits doing worse, shift 100% of 1 bandits",-1, record.actorAdjustment); 
+		
+	}
+	private StatisticsRecord setUpAdjustmentTestWithBanditListOfSize(int numberBandits)
+	{
+		peasants = TestBuilder.buildPeasantList(); 
+		bandits = TestBuilder.buildBanditList(numberBandits); 
+		statistics.updatePopulations(bandits, peasants); 
+		banditsPreyOnPeasants();
+		statistics.tick(); 
+		return statistics.getLastStatisticsRecord(); 
 	}
 	@Test
 	public void verifyStaticEuilibriumTracked() throws Exception
@@ -144,7 +186,7 @@ public class ProtectionStatisticsTest
 		statistics.setPayoffDiscrepancyTolerance(.01);
 		banditsPreyOnPeasants();
 		statistics.tick(); 
-		assertEquals("Period=1, Number Bandits=3, Number Peasants=4, Number Bandits After Replication=0, Number Peasants After Replication=0, Average Bandit Payoff=0.375, Average Peasant Payoff=0.21875, Bandit-Peasant Payoff Delta=0.15625, Peasant Adjustment=1",
+		assertEquals("Period=1, Number Bandits=3, Number Peasants=4, Number Bandits After Replication=0, Number Peasants After Replication=0, Average Bandit Payoff=0.375, Average Peasant Payoff=0.21875, Bandit-Peasant Payoff Delta=0.15625, Actor Adjustment=1",
 				statistics.getStatisticsRecords().get(0).toString());
 	}
 	@Test
@@ -179,6 +221,7 @@ public class ProtectionStatisticsTest
 	}
 	private void banditsPreyOnPeasants()
 	{
+		pattern = TestBuilder.buildPermutedRepeatableInteractionPattern(bandits, peasants); 
 		InteractionPair<Bandit, Peasant> pair = null;
 		while (pattern.hasNext())
 		{

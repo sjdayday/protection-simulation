@@ -134,7 +134,7 @@ public  class ProtectionEquilibriumSeeker
 	}
 	public boolean hasAdjustedThisPeriod()
 	{
-		if (protectionStatistics.getPeasantAdjustment() != 0) return true;  
+		if (protectionStatistics.getActorAdjustment() != 0) return true;  
 		else return false; 
 	}
 	public boolean populationSizesUnchanged()
