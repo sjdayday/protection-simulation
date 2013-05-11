@@ -20,7 +20,7 @@ public class ProtectionEquilibriumSeekerVariablePopulationTest
 	private ProtectionStatistics statistics;
 	private ProtectionEquilibriumSeeker seeker;
 	private FitnessFunction fitnessFunction;
-	private ReplicatorDynamic replicatorDynamic;
+	private DieSurviveThriveDynamic dstDynamic;
 	private boolean roleShifting;
 	@Before
 	public void setUp() throws Exception
@@ -47,10 +47,10 @@ public class ProtectionEquilibriumSeekerVariablePopulationTest
 		seeker.setBanditList(bandits); 
 		seeker.setInteractionPattern(pattern); 
 		seeker.setProtectionStatistics(statistics);
-		replicatorDynamic = new ReplicatorDynamic();
-		replicatorDynamic.setFitnessFunction(fitnessFunction); 
+		dstDynamic = new DieSurviveThriveDynamic();
+		dstDynamic.setFitnessFunction(fitnessFunction); 
 //		seeker.setReplicatorDynamic(replicatorDynamic); 
-		seeker.addDynamic(new ProtectionReplicatorDynamic(replicatorDynamic)); 
+		seeker.addDynamic(new ProtectionReplicatorDynamic(dstDynamic)); 
 		if (roleShifting) seeker.addDynamic(new RoleShiftingReplicatorDynamic(statistics)); 
 
 	}

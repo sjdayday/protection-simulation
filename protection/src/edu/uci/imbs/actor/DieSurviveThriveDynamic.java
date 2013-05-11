@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class ReplicatorDynamic
+public class DieSurviveThriveDynamic
 {
-	private static Logger logger = Logger.getLogger(ReplicatorDynamic.class);
+	private static Logger logger = Logger.getLogger(DieSurviveThriveDynamic.class);
 	private FitnessFunction fitnessFunction;
 
 	public void setFitnessFunction(FitnessFunction fitnessFunction)

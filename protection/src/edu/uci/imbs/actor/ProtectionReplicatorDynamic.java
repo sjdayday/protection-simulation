@@ -6,10 +6,10 @@ import java.util.List;
 public class ProtectionReplicatorDynamic implements Dynamic
 {
 
-	private ReplicatorDynamic replicatorDynamic;
+	private DieSurviveThriveDynamic replicatorDynamic;
 	private ProtectionPopulation protectionPopulation;
 
-	public ProtectionReplicatorDynamic(ReplicatorDynamic replicatorDynamic)
+	public ProtectionReplicatorDynamic(DieSurviveThriveDynamic replicatorDynamic)
 	{
 		this.replicatorDynamic = replicatorDynamic; 
 	}

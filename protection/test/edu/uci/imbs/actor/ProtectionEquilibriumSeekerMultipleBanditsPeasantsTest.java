@@ -21,7 +21,7 @@ public class ProtectionEquilibriumSeekerMultipleBanditsPeasantsTest
 	private MultipleBehaviorInteractionPattern pattern;
 	private VariablePopulationProtectionStatistics statistics;
 	private ProtectionEquilibriumSeekerMultipleBanditsPeasants seeker;
-	private ReplicatorDynamic replicatorDynamic;
+	private DieSurviveThriveDynamic dstDynamic;
 	@BeforeClass
 	public static void setUpLog4J() throws Exception
 	{
@@ -49,9 +49,9 @@ public class ProtectionEquilibriumSeekerMultipleBanditsPeasantsTest
 		seeker.setBanditList(bandits); 
 		seeker.setMultipleBehaviorInteractionPattern(pattern); 
 		seeker.setProtectionStatistics(statistics);
-		replicatorDynamic = new ReplicatorDynamic();
-		replicatorDynamic.setFitnessFunction(fitnessFunction); 
-		seeker.addDynamic(new ProtectionReplicatorDynamic(replicatorDynamic)); 
+		dstDynamic = new DieSurviveThriveDynamic();
+		dstDynamic.setFitnessFunction(fitnessFunction); 
+		seeker.addDynamic(new ProtectionReplicatorDynamic(dstDynamic)); 
 		if (roleShifting) seeker.addDynamic(new RoleShiftingReplicatorDynamic(statistics)); 
 	}
 	@Test

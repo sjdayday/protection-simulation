@@ -10,7 +10,7 @@ import org.junit.Test;
 public class ProtectionReplicatorDynamicTest
 {
 	private FitnessFunction fitnessFunction;
-	private ReplicatorDynamic replicatorDynamic;
+	private DieSurviveThriveDynamic dstDynamic;
 	private ProtectionPopulation protectionPopulation;
 	@Before
 	public void setUp() throws Exception
@@ -18,14 +18,14 @@ public class ProtectionReplicatorDynamicTest
 		fitnessFunction = new FitnessFunction(); 
 		fitnessFunction.setSurviveThreshold(.25); 
 		fitnessFunction.setThriveThreshold(.30); 
-		replicatorDynamic = new ReplicatorDynamic();
-		replicatorDynamic.setFitnessFunction(fitnessFunction); 
+		dstDynamic = new DieSurviveThriveDynamic();
+		dstDynamic.setFitnessFunction(fitnessFunction); 
 		protectionPopulation = new ProtectionPopulation(TestBuilder.buildBanditList(), TestBuilder.buildPeasantList());
 	}
 	@Test
 	public void verifyNewPopulationGeneratedWithExpectedLevelsOfPeasantsAndBandits() throws Exception
 	{
-		Dynamic dynamic = new ProtectionReplicatorDynamic(replicatorDynamic);
+		Dynamic dynamic = new ProtectionReplicatorDynamic(dstDynamic);
 		dynamic.setPopulation(protectionPopulation); 
 		protectionPopulation = dynamic.rebuildPopulation(); 
 		assertEquals("was 3, but all dropped",0, protectionPopulation.getBandits().size());

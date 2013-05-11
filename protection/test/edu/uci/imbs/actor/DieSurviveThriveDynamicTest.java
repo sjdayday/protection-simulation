@@ -15,9 +15,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class ReplicatorDynamicTest
+public class DieSurviveThriveDynamicTest
 {
-	private ReplicatorDynamic replicatorDynamic;
+	private DieSurviveThriveDynamic replicatorDynamic;
 	private List<Peasant> peasants;
 	private FitnessFunction fitnessFunction;
 	private Peasant peasant;
@@ -43,7 +43,7 @@ public class ReplicatorDynamicTest
 		peasants.add(TestBuilder.buildPeasant(2)); 
 		peasants.add(TestBuilder.buildPeasant(3)); 
 		fitnessFunction = new FitnessFunction(); 
-		replicatorDynamic = new ReplicatorDynamic();
+		replicatorDynamic = new DieSurviveThriveDynamic();
 		replicatorDynamic.setFitnessFunction(fitnessFunction); 
 	}
 	@Test
@@ -82,7 +82,7 @@ public class ReplicatorDynamicTest
 		assertEquals("no peasants replicate because under survive threshold", 0, newPeasants.size());
 		
 		fitnessFunction = new FitnessFunction(); 
-		replicatorDynamic = new ReplicatorDynamic();
+		replicatorDynamic = new DieSurviveThriveDynamic();
 		replicatorDynamic.setFitnessFunction(fitnessFunction); 
 		fitnessFunction.setSurviveThreshold(0.0); 
 		replicatorDynamic.replicate(Bandit.class, bandits, newBandits);  
@@ -128,7 +128,7 @@ public class ReplicatorDynamicTest
 		List<Bandit> bandits = TestBuilder.buildBanditList();  
 		verifyTargetNumbers(bandits); 
 		fitnessFunction = new FitnessFunction(); 
-		replicatorDynamic = new ReplicatorDynamic();
+		replicatorDynamic = new DieSurviveThriveDynamic();
 		replicatorDynamic.setFitnessFunction(fitnessFunction); 
 		fitnessFunction.setSurviveThreshold(0.0); 
 		ArrayList<Bandit> newBandits = new ArrayList<Bandit>(); 
