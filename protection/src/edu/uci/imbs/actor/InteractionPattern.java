@@ -11,13 +11,18 @@ public class InteractionPattern<S, T>
 	protected List<T> target;
 	private Iterator<S> sourceIterator;
 	private Iterator<T> targetIterator;
-	private Random random;
+	protected Random random;
 
 	public InteractionPattern(List<S> source, List<T> target)
 	{
+		updateSourceAndTarget(source, target);
+		buildIterators(); 
+		//TODO pattern should permute on first invocation
+	}
+	protected void updateSourceAndTarget(List<S> source, List<T> target)
+	{
 		this.source = source; 
 		this.target = target;
-		buildIterators(); 
 	}
 	public InteractionPattern(InteractionPattern<S, T> pattern)
 	{
@@ -39,10 +44,14 @@ public class InteractionPattern<S, T>
 	}
 	public void permute()
 	{
-		if (random == null) random = new Random(ProtectionParameters.RANDOM_SEED); //TODO consider removing this dependency by passing in the seed
+		buildRandom();
 		Collections.shuffle(source, random); 
 		Collections.shuffle(target, random); 
 		buildIterators(); 
+	}
+	protected void buildRandom()
+	{
+		if (random == null) random = new Random(ProtectionParameters.RANDOM_SEED); //TODO consider removing this dependency by passing in the seed
 	}
 	public boolean hasNext()
 	{
@@ -67,8 +76,7 @@ public class InteractionPattern<S, T>
 	}
 	public void updatePopulations(List<S> source, List<T> target)
 	{
-		this.source = source; 
-		this.target = target; 
+		updateSourceAndTarget(source, target); 
 		buildIterators();
 	}
 }

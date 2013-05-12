@@ -21,5 +21,14 @@ public class InteractionPair<S, T>
 	{
 		return target;
 	}
-
+    @Override
+    public String toString()
+    {
+    	StringBuffer sb = new StringBuffer(); 
+    	sb.append("Interaction Pair Source: ");
+    	sb.append(source.toString());
+    	sb.append(" Target: ");
+    	sb.append(target.toString());
+    	return sb.toString();
+    }
 }

@@ -18,11 +18,11 @@ public  class ProtectionEquilibriumSeeker
 	protected boolean done;
 	private List<Dynamic> dynamics;
 	private RunGovernor governor; 
-	static 
-	{
-		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.DEBUG);
-	}
+//	static 
+//	{
+//		BasicConfigurator.configure();
+//		Logger.getRootLogger().setLevel(Level.DEBUG);
+//	}
 
 	public ProtectionEquilibriumSeeker()
 	{

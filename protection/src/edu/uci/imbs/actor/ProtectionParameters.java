@@ -30,6 +30,7 @@ public class ProtectionParameters
 	public static double MATCHING_FUNCTION_BETA_EXPONENT;
 	public static double MATCHING_FUNCTION_MU;
 	public static boolean BANDITS_USE_MATCHING_FUNCTION;
+	public static boolean NORMAL_INTERACTION_PATTERN;
 
 	static 
 	{
@@ -61,6 +62,7 @@ public class ProtectionParameters
 		MATCHING_FUNCTION_BETA_EXPONENT = 1;
 		MATCHING_FUNCTION_MU = 1; 
 		BANDITS_USE_MATCHING_FUNCTION = false; 
+		NORMAL_INTERACTION_PATTERN = true; 
 		logger.debug("reset for testing completed."); 
 	}
 

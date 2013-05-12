@@ -1,5 +1,6 @@
 package edu.uci.imbs.actor;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
@@ -86,6 +87,27 @@ public class ProtectionEquilibriumSeekerVariablePopulationTest
 //		assertEquals(1, seeker.getProtectionStatistics().numberPeriods());  //FIXME 3(!)
 //		assertEquals(3, seeker.getProtectionStatistics().numberPeriods()); 
 
+	}
+	@Test
+	public void verifyAllInteractionPatternReducesNetInteractions() throws Exception
+	{	
+		bandits = TestBuilder.buildBanditList(); 
+		peasants = TestBuilder.buildPeasantList(); 
+		pattern = new AllInteractionPattern(bandits, peasants);	
+		statistics = new VariablePopulationProtectionStatistics(bandits, peasants, 21, .05); 
+		statistics.setPayoffDiscrepancyTolerance(.005);
+		statistics.setAdjustmentFactorPercentage(0.1); 
+		fitnessFunction.setSurviveThreshold(0.2); 
+		seeker.setPeasantList(peasants); 
+		seeker.setBanditList(bandits); 
+		seeker.setInteractionPattern(pattern); 
+		seeker.setProtectionStatistics(statistics);
+
+		seeker.setRunLimit(1); 
+		seeker.runToEquilibriumOrLimit(); 
+		StatisticsRecord record = statistics.getLastStatisticsRecord();
+		assertEquals("3rd bandit didn't have a peasant to prey upon",2, record.numberBanditsAfterReplication);
+		assertEquals("2 not preyed upon",2, record.numberPeasantsAfterReplication);
 	}
 	@Test
 	public void runScenario() throws Exception
