@@ -21,7 +21,7 @@ public class AllInteractionPatternTest
 	public static void setUpLog4J() throws Exception
 	{
 		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.DEBUG);
+		Logger.getRootLogger().setLevel(Level.ERROR);
 	}
 	@Before
 	public void setUp() throws Exception

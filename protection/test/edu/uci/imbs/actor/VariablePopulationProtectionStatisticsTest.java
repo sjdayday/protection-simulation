@@ -1,5 +1,6 @@
 package edu.uci.imbs.actor;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -32,6 +33,40 @@ public class VariablePopulationProtectionStatisticsTest
 		peasants = TestBuilder.buildPeasantListWithRandomProtectionProportions(10, ProtectionFunctionEnum.CONTEST.buildFunction(0.5)); // only one function for all peasants, initially 
 		bandits = TestBuilder.buildBanditList(5); 
 		statistics = new VariablePopulationProtectionStatistics(bandits, peasants, 21, 0.05); 
+	}
+	@Test
+	public void verifyHeadingsReturnedForPeasantProportionNumberAndPercentages() throws Exception
+	{
+		assertEquals(42, statistics.getPeasantProportionHeadings().size()); 
+		assertEquals("X0.0#", statistics.getPeasantProportionHeadings().get(0));
+		assertEquals("X0.0%", statistics.getPeasantProportionHeadings().get(1));
+		assertEquals("X1.0#", statistics.getPeasantProportionHeadings().get(40));
+		assertEquals("X1.0%", statistics.getPeasantProportionHeadings().get(41));
+	}
+	@Test
+	public void verifyPeasantProportionEntriesList() throws Exception
+	{
+		assertEquals(21,statistics.getPeasantProportionRecordEntries().size()); 
+		checkPeasantProportionRecordEntry(0,"X0.0#",2,"X0.0%",0.2); 
+		checkPeasantProportionRecordEntry(1,"X0.05#",2,"X0.05%",0.2); 
+		checkPeasantProportionRecordEntry(2,"X0.1#",0,"X0.1%",0.0); 
+		checkPeasantProportionRecordEntry(20,"X1.0#",1,"X1.0%",0.1); 
+	}
+	private void checkPeasantProportionRecordEntry(int index, String numberHeading, int number,
+			String proportionHeading, double proportion)
+	{
+		PeasantProportionRecordEntry entry = statistics.getPeasantProportionRecordEntries().get(index); 
+		assertEquals(numberHeading, entry.numberHeading); 
+		assertEquals(number, entry.number); 
+		assertEquals(proportionHeading, entry.proportionHeading); 
+		assertEquals(proportion, entry.proportion, .001); 
+		
+	}
+	@Test
+	public void verifyStatisticsRecordHasProportionEntries() throws Exception
+	{
+		statistics.tick(); 
+		assertEquals(21,statistics.getVariableStatisticsRecords().get(0).protectionProportions.size());
 	}
 	@Test
 	public void verifyStatisticsGatheredForProtectionProportionDistribution() throws Exception
@@ -81,10 +116,10 @@ public class VariablePopulationProtectionStatisticsTest
 				"9 : "+Constants.CRLF+
 				"10 : "+Constants.CRLF, statistics.printBanditPredationEffortDistribution());
 	}
-	@Test
+//	@Test
 	public void verifyBanditDistributionsUpdatedIfBanditPopulationUpdated() throws Exception
 	{
-//		fail(); 
+//TODO verifyBanditDistributionsUpdatedIfBanditPopulationUpdated do we need this? 
 	}
 	@Test
 	public void verifyStatisticsRecordContainsVariablePopulationFields() throws Exception
@@ -108,9 +143,7 @@ public class VariablePopulationProtectionStatisticsTest
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			fail("should not throw: "+e.getMessage());
 		}
-		
 	}
 }

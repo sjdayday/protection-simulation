@@ -35,6 +35,9 @@ public class VariablePopulationProtectionStatistics extends
 	private List<Integer> numbersOfPeasantsToPreyUpon;
 	private double[] numbersOfPeasantsToPreyUponDoubles;
 	private Map<Integer, Integer> numbersToPreyUpon;
+	private List<String> peasantProportionHeadings;
+	private Set<Entry<Double, Integer>> sortedFullDistributionEntries;
+	private List<PeasantProportionRecordEntry> peasantProportionRecordEntries;
 
 	public VariablePopulationProtectionStatistics(
 			List<Bandit> bandits, List<Peasant> peasants, int numberBins, double interval)
@@ -104,7 +107,29 @@ public class VariablePopulationProtectionStatistics extends
 		{
 			fullDistribution.put(Util.roundDoubleToTwoDecimalPlaces(interval * i), 0); 
 		}
-		loadPeasantProportionValuesToDistributions();
+		buildPeasantProportionHeadings(); 
+//		loadPeasantProportionValuesToDistributions();
+	}
+	private void buildPeasantProportionHeadings()
+	{
+		peasantProportionHeadings = new ArrayList<String>(); 
+		buildSortedFullDistributionEntries();
+		Iterator<Entry<Double, Integer>> it = sortedFullDistributionEntries.iterator(); 
+		String value = null; 
+		Entry<Double, Integer> currentEntry = null; 
+		while (it.hasNext())
+		{
+			currentEntry = it.next();
+			value = currentEntry.getKey().toString();
+			peasantProportionHeadings.add("X"+value+"#"); 
+			peasantProportionHeadings.add("X"+value+"%"); 
+		}
+	}
+	protected void buildSortedFullDistributionEntries()
+	{
+		Set<Entry<Double, Integer>> entries = fullDistribution.entrySet(); 
+		sortedFullDistributionEntries = new TreeSet<Entry<Double, Integer>>(new EntryComparator());
+		sortedFullDistributionEntries.addAll(entries);
 	}
 	private void loadPeasantProportionValuesToDistributions()
 	{
@@ -117,6 +142,21 @@ public class VariablePopulationProtectionStatistics extends
 			distribution.put(bin, temp);
 			fullDistribution.put(bin, temp);
 		}
+		buildPeasantProportionRecordEntries(); 
+	}
+	private void buildPeasantProportionRecordEntries()
+	{
+		peasantProportionRecordEntries = new ArrayList<PeasantProportionRecordEntry>();
+		Iterator<String> it = peasantProportionHeadings.iterator(); 
+		Iterator<Entry<Double, Integer>> itNumbers = sortedFullDistributionEntries.iterator(); 
+		int total = peasants.size(); 
+		while (it.hasNext())
+		{
+			Double number = new Double(itNumbers.next().getValue());
+			double proportion = (total != 0) ? number / total : 0; 
+			peasantProportionRecordEntries.add(new PeasantProportionRecordEntry(it.next(), number.intValue(), it.next(), proportion));
+		}
+		
 	}
 	private void loadPredationBehaviorsForCalculation()
 	{
@@ -239,17 +279,15 @@ public class VariablePopulationProtectionStatistics extends
 	protected void buildStatisticsRecord()
 	{
 		variableStatisticsRecords.add(new VariablePopulationStatisticsRecord(period, numberBandits, numberPeasants, averageBanditPayoff, averagePeasantPayoff, banditPeasantPayoffDelta, actorAdjustment, 
-				averagePeasantProtectionProportion, medianPeasantProtectionProportion, modePeasantProtectionProportion, averageBanditNumberPeasantsToPreyUpon, medianBanditNumberPeasantsToPreyUpon, modeBanditNumberPeasantsToPreyUpon)); 
+				averagePeasantProtectionProportion, medianPeasantProtectionProportion, modePeasantProtectionProportion, averageBanditNumberPeasantsToPreyUpon, medianBanditNumberPeasantsToPreyUpon, modeBanditNumberPeasantsToPreyUpon, peasantProportionRecordEntries)); 
 		logger.debug("statistics record added: "+variableStatisticsRecords.size());
 	}
 	public String printPeasantProtectionProportionDistribution()
 	{
 		StringBuffer sb = new StringBuffer(); 
 		sb.append(Constants.CRLF);
-		Set<Entry<Double, Integer>> entries = fullDistribution.entrySet(); 
-		Set<Entry<Double, Integer>> treeSet = new TreeSet<Entry<Double, Integer>>(new EntryComparator());
-		treeSet.addAll(entries); 
-		Iterator<Entry<Double, Integer>> it = treeSet.iterator(); 
+		buildSortedFullDistributionEntries();
+		Iterator<Entry<Double, Integer>> it = sortedFullDistributionEntries.iterator(); 
 		Entry<Double, Integer> currentEntry = null;
 		String oneDigit = null; 
 		while (it.hasNext())
@@ -317,6 +355,14 @@ public class VariablePopulationProtectionStatistics extends
 	public double medianBanditNumberPeasantsToPreyUpon()
 	{
 		return medianBanditNumberPeasantsToPreyUpon;
+	}
+	public List<String> getPeasantProportionHeadings()
+	{
+		return peasantProportionHeadings;
+	}
+	public List<PeasantProportionRecordEntry> getPeasantProportionRecordEntries()
+	{
+		return peasantProportionRecordEntries;
 	}
 	private class EntryComparator implements Comparator<Entry<Double, Integer>>
 	{
