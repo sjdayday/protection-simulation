@@ -2,11 +2,21 @@ package edu.uci.imbs.actor;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ProtectionEquilibriumSeekerTest
 {
 	private ProtectionEquilibriumSeeker seeker;
+	@BeforeClass
+	public static void setUpLog4J() throws Exception
+	{
+		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.ERROR);
+	}
 	@Test
 	public void verifyMultipleDynamicsAreProcessed() throws Exception
 	{

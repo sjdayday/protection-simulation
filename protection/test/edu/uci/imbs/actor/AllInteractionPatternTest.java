@@ -1,6 +1,6 @@
 package edu.uci.imbs.actor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.*; 
 
 import java.util.List;
 
@@ -65,9 +65,24 @@ public class AllInteractionPatternTest
 		assertFalse("only two pairs",pattern.hasNext());
 	}
 	@Test
-	public void verifyPopulationUpdated() throws Exception
+	public void verifyPopulationUpdatedRebuildingCombinedAndInteractionPairLists() throws Exception
 	{
 		pattern.updatePopulations(TestBuilder.buildBanditList(5), peasants);
+		assertEquals(9, pattern.getCombinedList().size());
+		assertEquals("no interaction pairs prior to permute",0, pattern.getInteractionPairs().size()); 
+		pattern.permute(); 
+		assertEquals("should shuffle list, but not change its size",9, pattern.getCombinedList().size()); 
+		assertEquals("random shuffle pairs 3 bandits and peasants",3, pattern.getInteractionPairs().size()); 
+		pattern.updatePopulations(TestBuilder.buildBanditList(5), peasants);
+		assertEquals(9, pattern.getCombinedList().size());
+		assertEquals("resets interaction pairs to empty",0, pattern.getInteractionPairs().size()); 
+		pattern.permute(); 
+//		for (Actor actor : pattern.getCombinedList())
+//		{  // eyeball it to see which actors will be paired up
+//			System.out.println(actor);
+//		}
 		assertEquals(9, pattern.getCombinedList().size()); 
+		assertEquals("next shuffle gives 1 ",1, pattern.getInteractionPairs().size()); 
+
 	}
 }

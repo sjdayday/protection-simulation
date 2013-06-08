@@ -31,6 +31,10 @@ public class ProtectionParameters
 	public static double MATCHING_FUNCTION_MU;
 	public static boolean BANDITS_USE_MATCHING_FUNCTION;
 	public static boolean NORMAL_INTERACTION_PATTERN;
+	public static boolean FORCE_PEASANT_ALLOCATION_TO_HIGH_LOW;
+	public static double FORCE_PEASANT_ALLOCATION_HIGH_PROPORTION;
+	public static double FORCE_PEASANT_ALLOCATION_LOW_PROPORTION;
+	public static int FORCE_PEASANT_ALLOCATION_LOW_INITIAL_PEASANTS;
 
 	static 
 	{
@@ -63,6 +67,10 @@ public class ProtectionParameters
 		MATCHING_FUNCTION_MU = 1; 
 		BANDITS_USE_MATCHING_FUNCTION = false; 
 		NORMAL_INTERACTION_PATTERN = true; 
+		FORCE_PEASANT_ALLOCATION_TO_HIGH_LOW = false; 
+		FORCE_PEASANT_ALLOCATION_HIGH_PROPORTION = 0; 
+		FORCE_PEASANT_ALLOCATION_LOW_PROPORTION = 0; 
+		FORCE_PEASANT_ALLOCATION_LOW_INITIAL_PEASANTS = 0; 
 		logger.debug("reset for testing completed."); 
 	}
 

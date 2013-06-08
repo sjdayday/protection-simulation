@@ -1,6 +1,6 @@
 package edu.uci.imbs.actor;
 
-import java.util.ArrayList;
+import java.util.ArrayList;      
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -18,14 +18,16 @@ public class AllInteractionPattern extends InteractionPattern<Bandit, Peasant>
 	{
 		super(bandits, peasants); 
 		buildCombinedListAndIterator(); 
+		buildRandom(); 
+		permute(); 
 	}
 	private void buildCombinedListAndIterator()
 	{	
 		combinedList = new ArrayList<Actor>();
 		combinedList.addAll(source); 
-		combinedList.addAll(target); 
+		combinedList.addAll(target);
+		logger.debug("AllInteractionPattern.buildCombinedListAndIterator: source size: "+source.size()+" target size: "+target.size()+" combined size: "+(source.size()+target.size()));
 		interactionPairs = new ArrayList<InteractionPair<Bandit, Peasant>>(); 
-		permute();
 	}
 	@Override
 	public boolean hasNext()
@@ -46,7 +48,6 @@ public class AllInteractionPattern extends InteractionPattern<Bandit, Peasant>
 	@Override
 	public void permute()
 	{
-		buildRandom(); 
 		Collections.shuffle(combinedList, random); 
 		buildInteractionPairList();
 	}
@@ -66,6 +67,7 @@ public class AllInteractionPattern extends InteractionPattern<Bandit, Peasant>
 				buildInteractionPair(actor2, actor1);  // or the other (or maybe neither)
 			}
 		}
+		logger.debug("AllInteractionPattern.buildInteractionPairList: interactionPairs size: "+interactionPairs.size());
 		pairIterator = interactionPairs.iterator(); 
 	}
 	private void buildInteractionPair(Actor actor1, Actor actor2)
@@ -81,5 +83,9 @@ public class AllInteractionPattern extends InteractionPattern<Bandit, Peasant>
 	protected List<Actor> getCombinedList()
 	{
 		return combinedList;
+	}
+	protected List<InteractionPair<Bandit, Peasant>> getInteractionPairs()
+	{
+		return interactionPairs;
 	}
 }

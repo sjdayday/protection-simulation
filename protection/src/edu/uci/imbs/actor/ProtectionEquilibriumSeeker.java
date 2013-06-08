@@ -3,8 +3,6 @@ package edu.uci.imbs.actor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public  class ProtectionEquilibriumSeeker
@@ -18,11 +16,6 @@ public  class ProtectionEquilibriumSeeker
 	protected boolean done;
 	private List<Dynamic> dynamics;
 	private RunGovernor governor; 
-//	static 
-//	{
-//		BasicConfigurator.configure();
-//		Logger.getRootLogger().setLevel(Level.DEBUG);
-//	}
 
 	public ProtectionEquilibriumSeeker()
 	{
@@ -79,6 +72,7 @@ public  class ProtectionEquilibriumSeeker
 		ProtectionPopulation protectionPopulation = new ProtectionPopulation(banditList, peasantList); 
 		for (Dynamic dynamic : dynamics)
 		{
+			logger.debug("ProtectionEquilibriumSeeker.runDynamicsAgainstPopulation: invoking dynamic "+dynamic.toString()); 
 			dynamic.setPopulation(protectionPopulation);
 			protectionPopulation = dynamic.rebuildPopulation(); 
 		}
@@ -87,6 +81,7 @@ public  class ProtectionEquilibriumSeeker
 	}
 	protected void updatePopulationLists()
 	{
+		logger.debug("ProtectionEquilibriumSeeker.updatePopulationLists: updating populations: bandits: "+banditList.hashCode()+" size: "+banditList.size()+" peasants: "+peasantList.hashCode()+" size: "+peasantList.size()); 
 		interactionPattern.updatePopulations(banditList, peasantList);
 		interactionPattern.permute(); 
 		protectionStatistics.updatePopulations(banditList, peasantList);
