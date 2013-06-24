@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 public  class ProtectionEquilibriumSeeker
 {
-	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(ProtectionEquilibriumSeeker.class);
 	protected List<Peasant> peasantList; 
 	protected List<Bandit> banditList; 
