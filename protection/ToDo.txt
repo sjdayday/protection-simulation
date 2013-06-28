@@ -1,4 +1,4 @@
-verify connection to remote repo
+
 match function:  alpha / beta in [0,1], no constraint on mu? 
 MultipleBehaviorInteractionPattern:  matching function gives number of matches; 
 calculate as percentage of bandit.size(); that percentage of peasants can be preyed upon
@@ -6,13 +6,11 @@ capped at 1.0
 but costs are incurred regardless, for each number that the bandit selects.  
 ParameterSpace should check to see if target class has a validate method, and if so, iterate through parameter points calling validate to ensure that only supported combinations are 
 invoked.
-Static parameters....keep getting side effect :(
 
 protection statistics not printing the last record after governor says stop.  Compare:  Scenario_48_2013_02_12__06_16_31PM_Default scenario name and Scenario_48_2013_02_17__12_45_05PM_Default scenario name
 from scenario sets 27 and 26
 
 getSourceList and getTargetList not used in prod code; maintain for testing only? 
-fit:  name and persist parameter space
 
 interaction pattern: match lists
 peasant: peasant calculates sum of y_i's, updates contest function
