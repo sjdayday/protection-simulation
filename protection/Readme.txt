@@ -7,7 +7,8 @@ v1.0:  bandits and peasants in the anarchy condition
 * Dynamic: each agent lives one period; if its payoff is below a *survive* threshold, it dies, otherwise it has a single descendant. If its payoff is higher, above a *thrive* threshold, it has two descendants.  
 * Peasants inherit the protection proportion of the parent.  
 * Equilibrium:  average payoffs to bandits and peasants are equal, within a tolerance.
-* Optionally, bandits may prey upon multiple peasants; peasants will then be preyed upon by multiple bandits
+* Optionally, bandits may prey upon multiple peasants; peasants will therefore be preyed upon by multiple bandits
+* Support for an evolutionary game theory comparison to the simulation using exactly three strategies:  "bandit", "high" (peasant with high protection), "low" (peasant with low protection) 
 
 This is a bare-bones initial version.  Future versions will include:
 * Local interaction of agents on a spatial grid, through Repast or Mason
@@ -16,7 +17,7 @@ This is a bare-bones initial version.  Future versions will include:
 * Implementation of more cognitively-plausible agents
 
 Documentation in this initial version is through the unit tests under src/test/java
-Future versions will include higher-level tests, documented and executed through fitnesse:  http://fitnesse.org/
+Future versions will include higher-level tests, documented and executed through fitnesse:  http://fitnesse.org/  (see the three supporting projects that make this possible, below)
 
 This simulation is currently stand-alone, but is intended to be part of an interacting set of economic and cognitive models. 
 
@@ -24,15 +25,20 @@ As this implies ongoing development, this project is organized as an open-source
     https://github.com/sjdayday/protection-simulation.git
 This and related projects will be periodically re-uploaded to openabm.org, but will be maintained through github; the most current status will always be there.
 
-The project is organized for Maven deployment, but is not yet available through a Maven repository; contact me if you would like the 1.0 JAR. 
+The project is organized for Maven deployment, but is not yet available through a Maven repository; contact me if you would like the 1.0 JAR 
+and are having difficulty generating it through your own Maven configuration.    
 
-To manage the complexity of multiple versions of multiple projects, a simple replication framework is also under development.  The core support of the initial version is available here:
+This project is stand-alone, but generating results for different combinations of parameters is most easily done with the help of three other projects: 
+  simulation-scenario:  Framework for running and replicating simulations
     https://github.com/sjdayday/simulation-scenario.git
-See the readme for information on other supporting projects. 
-
+  simulation-scenario-fit:  Packaging of fitnesse and fitlibrary acceptance testing frameworks, and simulation-related test fixtures.
+    https://github.com/sjdayday/simulation-scenario-fit.git   
+  protection-scenario-fit:  Uses the two project above to enable fitlibrary acceptance tests and production simulations to be run against this project (the Market for Protection model)
+    https://github.com/sjdayday/protection-simulation-fit.git
+ 
 This is not a one-person project -- help is welcome!
 
 Steve Doubleday
 UC Irvine
-twitter: sjdayday
+twitter: @sjdayday
 stevedoubleday [at] gmail [dot] com 
