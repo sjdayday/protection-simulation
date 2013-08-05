@@ -56,19 +56,20 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 	}
 	public void refreshListsOfPeasantsAndBandits()
 	{
+		List<Peasant> existingPeasants = protectionPopulation.getPeasants();
+		sortPeasantsByPayoffAscending(existingPeasants); 
 		peasants = new ArrayList<Peasant>(); 
 		bandits = new ArrayList<Bandit>(); 
-		for (Peasant peasant : protectionPopulation.getPeasants())
+		for (Peasant peasant : existingPeasants)
 		{
 			peasants.add(buildNewPeasant(peasant)); 
 		}
-		sortPeasantsByPayoffAscending(); 
 		for (Bandit bandit : protectionPopulation.getBandits())
 		{
 			bandits.add(new Bandit(bandit)); 
 		}
 	}
-	public void sortPeasantsByPayoffAscending()
+	public void sortPeasantsByPayoffAscending(List<Peasant> peasants)
 	{
 		Comparator<Peasant> comparator = new PeasantAveragePayoffComparator(); 
 		Collections.sort(peasants, comparator);
@@ -102,7 +103,14 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 	public Peasant buildPeasant()
 	{
 		int lastPeasantIndex = peasants.size()-1;
-		if (lastPeasantIndex >= 0) return new Peasant(peasants.get(lastPeasantIndex));
+		if (lastPeasantIndex >= 0) 
+		{
+			//TODO consider whether we should randomly assign a protection proportion (strategy), rather than taking the best-performing one?
+//			Peasant newP = new Peasant(peasants.get(lastPeasantIndex));
+//			System.out.println("RoleShiftingReplicatorDynamic.buildPeasant: old protProp: "+peasants.get(lastPeasantIndex).toString()+" new protProp: "+newP.toString());
+//			return newP;
+			return new Peasant(peasants.get(lastPeasantIndex));
+		}
 		else 
 		{
 			throw new RuntimeException("RoleShiftingReplicatorDynamic.buildPeasant:  Not expecting to need Last Standing logic but attempted to replicate from empty list of Peasants.");

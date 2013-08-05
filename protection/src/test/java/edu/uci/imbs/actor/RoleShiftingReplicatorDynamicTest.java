@@ -26,6 +26,7 @@ public class RoleShiftingReplicatorDynamicTest
 		population = new ProtectionPopulation(bandits, peasants); 
 		ProtectionParameters.MIMIC_BETTER_PERFORMING_POPULATION = false; 
 	}
+	//TODO verifyNewPeasantsAdoptTheStrategyOfTheHighestPerformingPeasantNotARandomStrategy  ....if that's what we want?
 	@Test
 	public void verifyShiftsBanditsToPeasantsByOne() throws Exception
 	{
@@ -73,17 +74,33 @@ public class RoleShiftingReplicatorDynamicTest
 	public void verifyPeasantsRemovedHadLowestPayoff() throws Exception
 	{
 		stats = new TestingStatistics(bandits, peasants, -2); 
-		peasants.get(0).setPayoffForTesting(.7d); 
-		peasants.get(1).setPayoffForTesting(.1d); // will be dropped 
-		peasants.get(2).setPayoffForTesting(.3d); // will be dropped
-		peasants.get(3).setPayoffForTesting(.5d); 
+		peasants.get(0).setProtectionProportion(.7d); 
+		assertEquals(.49, peasants.get(0).getProtection(), .001); 
+		assertEquals(.147, peasants.get(0).getProtectedPayoff(), .001); 
+		peasants.get(0).surrenderUnprotectedPayoff();
+		assertEquals("high protection, moderately low payoff, so will be kept",
+				.147, peasants.get(0).getPayoff(), .001); 
+		peasants.get(1).setProtectionProportion(.1d); 
+		assertEquals("keeps all 1-x cause not surrendered",.9, peasants.get(1).getPayoff(), .001); 
+		peasants.get(1).surrenderUnprotectedPayoff(); 
+		assertEquals("low protection, lowest payoff after surrender, so will be dropped",
+				.009, peasants.get(1).getPayoff(), .001); 
+		peasants.get(2).setProtectionProportion(.3d); 
+		assertEquals("low protection, but doesn't surrender so payoff high enough to keep",
+				.7, peasants.get(2).getPayoff(), .001); 
+		peasants.get(3).setProtectionProportion(.5d); 
+		peasants.get(3).surrenderUnprotectedPayoff(); 
+		assertEquals("moderate protection, but surrendered, so payoff is low; dropped",
+				.125, peasants.get(3).getPayoff(), .001); 
 
-		Dynamic dynamic = getRoleShiftingReplicatorDynamicWithForcedPayoffs(); 
+		Dynamic dynamic = new RoleShiftingReplicatorDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 
-		assertEquals(0.5, population.getPeasants().get(0).getPayoff(), .001);
-		assertEquals(0.7, population.getPeasants().get(1).getPayoff(), .001);
+		assertEquals("second highest payoff before dynamic",0.7, population.getPeasants().get(0).getProtectionProportion(), .001);
+		assertEquals(0.3, population.getPeasants().get(0).getPayoff(), .001); 
+		assertEquals("highest payoff before dynamic",0.3, population.getPeasants().get(1).getProtectionProportion(), .001);
+		assertEquals(0.7, population.getPeasants().get(1).getPayoff(), .001); 
 		assertEquals(2, population.getPeasants().size());
 	}
 	@Test
@@ -105,21 +122,20 @@ public class RoleShiftingReplicatorDynamicTest
 		assertEquals("original peasant list size unchanged",4,population.getPeasants().size()); 
 		assertEquals("no bandits created",0,population.getBandits().size()); 
 	}
-	
-	private Dynamic getRoleShiftingReplicatorDynamicWithForcedPayoffs()
-	{
-		//anonymous inner class
-		return new RoleShiftingReplicatorDynamic(stats)
-		{
-			@Override
-			protected Peasant buildNewPeasant(Peasant peasant)
-			{
-				Peasant forced = new Peasant(); 
-				forced.setPayoffForTesting(peasant.getPayoff()); 
-				return forced;
-			}
-		};
-	}
+//	private Dynamic getRoleShiftingReplicatorDynamicWithForcedPayoffs()
+//	{
+//		//anonymous inner class
+//		return new RoleShiftingReplicatorDynamic(stats)
+//		{
+//			@Override
+//			protected Peasant buildNewPeasant(Peasant peasant)
+//			{
+//				Peasant forced = new Peasant(); 
+//				forced.setPayoffForTesting(peasant.getPayoff()); 
+//				return forced;
+//			}
+//		};
+//	}
 	private class TestingStatistics extends ProtectionStatistics
 	{
 		
