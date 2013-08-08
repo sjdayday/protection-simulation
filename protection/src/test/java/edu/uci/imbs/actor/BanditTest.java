@@ -52,6 +52,14 @@ public class BanditTest
 		assertEquals(0, bandit.getPayoff(), .001); 
 	}
 	@Test
+	public void verifyTickResetsBehaviors() throws Exception
+	{
+		behavior = bandit.getPredationBehavior();
+		bandit.tick(); 
+		assertNotSame(bandit.getPredationBehavior(), behavior);
+	}
+
+	@Test
 	public void verifyBanditPreysOnPeasantWithContestFunction() throws Exception
 	{
 		peasant.setFunction(ProtectionFunctionEnum.CONTEST.buildFunction(0.5)); 

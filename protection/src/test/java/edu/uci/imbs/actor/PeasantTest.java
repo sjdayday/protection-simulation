@@ -108,6 +108,13 @@ public class PeasantTest
 		assertFalse(peasant.hasSurrendered()); 
 	}
 	@Test
+	public void verifyTickResetsBehaviors() throws Exception
+	{
+		ProtectionBehavior behavior = peasant.getProtectionBehavior(); 
+		peasant.tick(); 
+		assertNotSame(peasant.getProtectionBehavior(), behavior);
+	}
+	@Test
 	public void verifyPeasantStateSetBeforeGetsAllowed() throws Exception
 	{
 		peasant = new Peasant(); 

@@ -12,7 +12,7 @@ public class TestingActorNotInstantiable extends Actor implements Heritable
 	}
 	public TestingActorNotInstantiable(boolean b)
 	{
-		// any old constructur to avoid nullary
+		// any old constructor to avoid the forced error in the null constructo
 	}
 	@Override
 	public String getName()

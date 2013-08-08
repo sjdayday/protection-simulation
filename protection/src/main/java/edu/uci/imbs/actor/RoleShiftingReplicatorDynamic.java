@@ -20,16 +20,18 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 		this.statistics = stats; 
 	}
 	@Override
+	public void setPopulation(ProtectionPopulation protectionPopulation)
+	{
+		this.protectionPopulation = protectionPopulation;
+		this.peasants = protectionPopulation.getPeasants();
+		this.bandits = protectionPopulation.getBandits(); 
+	}
+	@Override
 	public ProtectionPopulation rebuildPopulation()
 	{
 		int adjustment = statistics.getActorAdjustment();
 		if (adjustment != 0) adjustPeasantsAndBanditsInOppositeDirections(adjustment); 
 		return protectionPopulation;
-	}
-	@Override
-	public void setPopulation(ProtectionPopulation protectionPopulation)
-	{
-		this.protectionPopulation = protectionPopulation;
 	}
 	protected void adjustPeasantsAndBanditsInOppositeDirections(int adjust)
 	{
@@ -49,27 +51,27 @@ public class RoleShiftingReplicatorDynamic implements Dynamic
 		}
 		protectionPopulation = new ProtectionPopulation(bandits, peasants);
 	}
+	protected void refreshListsOfPeasantsAndBandits()
+	{
+//		List<Peasant> existingPeasants = protectionPopulation.getPeasants();
+		sortPeasantsByPayoffAscending(); 
+//		peasants = new ArrayList<Peasant>(); 
+//		bandits = new ArrayList<Bandit>(); 
+//		for (Peasant peasant : existingPeasants)
+//		{
+//			peasants.add(buildNewPeasant(peasant)); 
+//		}
+//		for (Bandit bandit : protectionPopulation.getBandits())
+//		{
+//			bandits.add(new Bandit(bandit)); 
+//		}
+	}
 	private boolean eitherPopulationIsEmpty()
 	{
 		if ((protectionPopulation.getBandits().size() == 0) || (protectionPopulation.getPeasants().size() == 0)) return true;  
 		else return false;
 	}
-	public void refreshListsOfPeasantsAndBandits()
-	{
-		List<Peasant> existingPeasants = protectionPopulation.getPeasants();
-		sortPeasantsByPayoffAscending(existingPeasants); 
-		peasants = new ArrayList<Peasant>(); 
-		bandits = new ArrayList<Bandit>(); 
-		for (Peasant peasant : existingPeasants)
-		{
-			peasants.add(buildNewPeasant(peasant)); 
-		}
-		for (Bandit bandit : protectionPopulation.getBandits())
-		{
-			bandits.add(new Bandit(bandit)); 
-		}
-	}
-	public void sortPeasantsByPayoffAscending(List<Peasant> peasants)
+	public void sortPeasantsByPayoffAscending()
 	{
 		Comparator<Peasant> comparator = new PeasantAveragePayoffComparator(); 
 		Collections.sort(peasants, comparator);

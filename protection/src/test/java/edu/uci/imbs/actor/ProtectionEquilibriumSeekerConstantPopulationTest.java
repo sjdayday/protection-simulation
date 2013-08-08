@@ -46,16 +46,6 @@ public class ProtectionEquilibriumSeekerConstantPopulationTest
 //		printRecords(); 
 //		assertEquals(3, seeker.getProtectionStatistics().numberPeriods()); 
 	}
-	@Test
-	public void verifyEachRunCausesListsToBeUpdated() throws Exception
-	{
-		assertEquals(peasants, seeker.getPeasantList()); 
-		assertEquals(bandits, seeker.getBanditList());
-		seeker.setRunLimit(1); 
-		seeker.runToEquilibriumOrLimit(); 
-		assertNotSame(peasants, seeker.getPeasantList()); 
-		assertNotSame(bandits, seeker.getBanditList());
-	}
 
 	@Test
 	public void verifyRunsToPeriodLimitIfDiscrepanciesNeverWithinThreshold() throws Exception

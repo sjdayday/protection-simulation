@@ -96,7 +96,10 @@ public class RoleShiftingReplicatorDynamicTest
 		Dynamic dynamic = new RoleShiftingReplicatorDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
-
+		for (Peasant peasant : population.getPeasants()) 
+		{
+			peasant.tick(); 
+		}
 		assertEquals("second highest payoff before dynamic",0.7, population.getPeasants().get(0).getProtectionProportion(), .001);
 		assertEquals(0.3, population.getPeasants().get(0).getPayoff(), .001); 
 		assertEquals("highest payoff before dynamic",0.3, population.getPeasants().get(1).getProtectionProportion(), .001);

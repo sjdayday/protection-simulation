@@ -110,6 +110,8 @@ public class DieSurviveThriveDynamicTest
 	@Test
 	public void verifyClassThatDoesntImplementHeritableWillThrowUsefulException() throws Exception
 	{
+		fitnessFunction.setSurviveThreshold(0.25); 
+		fitnessFunction.setThriveThreshold(0.5); 
 		TestingActorNotInstantiable actor = new TestingActorNotInstantiable(true); 
 		List<TestingActorNotInstantiable> actors = new ArrayList<TestingActorNotInstantiable>(); 
 		actors.add(actor); 
@@ -117,7 +119,7 @@ public class DieSurviveThriveDynamicTest
 		try
 		{
 			replicatorDynamic.replicate(TestingActorNotInstantiable.class, actors, newActors);  
-			fail("should throw"); 
+			fail("we're trying to thrive; first actor is copied; second is replicated and should throw"); 
 		}
 		catch (Exception e)
 		{

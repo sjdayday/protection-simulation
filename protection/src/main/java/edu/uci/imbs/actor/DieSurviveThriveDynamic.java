@@ -15,6 +15,7 @@ public class DieSurviveThriveDynamic
 	{
 		this.fitnessFunction = fitnessFunction; 
 	}
+	@SuppressWarnings("unchecked")
 	public <H> void replicate(Class<H> clazz, List<? extends Heritable> actors, List<H> newActors)
 	{
 		logger.debug("About to replicate actors");
@@ -32,14 +33,16 @@ public class DieSurviveThriveDynamic
 			case SURVIVE: 
 			{
 				logger.debug("Actor about to survive: "+heritable.toString()); 
-				newActors.add(replicate(clazz, heritable));
+				newActors.add((H) heritable);  // preserve  state of old actor for use by other dynamics
+//				newActors.add(replicate(clazz, heritable));
 			}	
 				break;
 			case THRIVE:  
 			{
 				logger.debug("Actor about to thrive: "+heritable.toString()); 
-				newActors.add(replicate(clazz, heritable));
-				newActors.add(replicate(clazz, heritable));
+				newActors.add((H) heritable); // preserve state of old actor for use by other dynamics
+//				newActors.add(replicate(clazz, heritable));
+				newActors.add(replicate(clazz, heritable));  // new actor has no previous state
 			}	
 				break;
 

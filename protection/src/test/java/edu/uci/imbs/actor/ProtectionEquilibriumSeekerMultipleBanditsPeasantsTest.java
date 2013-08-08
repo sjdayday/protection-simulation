@@ -65,9 +65,15 @@ public class ProtectionEquilibriumSeekerMultipleBanditsPeasantsTest
 //		assertEquals(bandits, seeker.getBanditList());
 		seeker.setRunLimit(2); 
 		seeker.runToEquilibriumOrLimit(); 
+//		for (Bandit bandit : seeker.getBanditList()) {
+//			System.out.println(bandit);
+//		}
+//		for (Peasant peasant : seeker.getPeasantList()) {
+//			System.out.println(peasant);
+//		}
 		assertEquals(2, seeker.getProtectionStatistics().getStatisticsRecords().size()); 
 		assertEquals(3, seeker.getProtectionStatistics().numberPeriods()); 
-		assertEquals(5, seeker.getBanditList().size());
+		assertEquals(6, seeker.getBanditList().size());
 		assertEquals(4, seeker.getPeasantList().size()); 
 		StatisticsRecord record = seeker.getProtectionStatistics().getStatisticsRecords().get(0);
 		assertEquals(3, record.numberBandits); 
@@ -77,7 +83,7 @@ public class ProtectionEquilibriumSeekerMultipleBanditsPeasantsTest
 		record = seeker.getProtectionStatistics().getStatisticsRecords().get(1);
 		assertEquals(5, record.numberBandits); 
 		assertEquals(7, record.numberPeasants); 
-		assertEquals(5, record.numberBanditsAfterReplication); 
+		assertEquals(6, record.numberBanditsAfterReplication); 
 		assertEquals(4, record.numberPeasantsAfterReplication); 
 //		assertNotSame(peasants, seeker.getPeasantList()); 
 //		assertNotSame(bandits, seeker.getBanditList());

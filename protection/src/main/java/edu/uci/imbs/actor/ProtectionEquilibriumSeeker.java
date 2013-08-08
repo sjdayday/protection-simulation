@@ -32,8 +32,8 @@ public  class ProtectionEquilibriumSeeker
 			banditsPreyOnPeasants();
 			protectionStatistics.tick();  // dynamics need the calculated stats; we cut the record here 
 			runDynamicsAgainstPopulation(); // population level changes here	
-			updatePopulationLists();  // prior to updating the populations
 			tickActors();  // perhaps periods and 
+			updatePopulationLists();  // prior to updating the populations
 			governor.tick(); 
 		}
 		return governor.stop(); 

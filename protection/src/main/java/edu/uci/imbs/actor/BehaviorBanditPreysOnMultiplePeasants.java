@@ -108,5 +108,8 @@ public class BehaviorBanditPreysOnMultiplePeasants extends AbstractBehavior
 	{
 		resetTargets(); 
 	}
-
+	@Override
+	public String toString() {
+		return " number of peasants to prey upon: "+numberPeasantsToPreyUpon+"; predation effort: "+predationEffort+"; total payoff: "+totalPayoff;
+	}
 }

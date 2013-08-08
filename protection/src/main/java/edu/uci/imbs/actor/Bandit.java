@@ -28,7 +28,7 @@ public class Bandit extends Actor implements Heritable
 	@Override
 	public String toString()
 	{
-		return "Bandit: "+getId()+"  Payoff: "+getPayoff();
+		return "Bandit: "+getId()+"  Payoff: "+getPayoff()+((predationBehavior != null) ? predationBehavior.toString() : "");
 	}
 	@Override
 	public double getPayoff()
@@ -43,6 +43,7 @@ public class Bandit extends Actor implements Heritable
 	public void tick()
 	{
 		super.tick();
+		predationBehavior = null; 
 		payoff = 0; 
 	}
 	public void inheritBandit(Bandit bandit)
