@@ -54,7 +54,7 @@ public class ProtectionEquilibriumSeekerMultipleBanditsPeasantsTest
 		dstDynamic = new DieSurviveThriveDynamic();
 		dstDynamic.setFitnessFunction(fitnessFunction); 
 		seeker.addDynamic(new ProtectionReplicatorDynamic(dstDynamic)); 
-		if (roleShifting) seeker.addDynamic(new RoleShiftingReplicatorDynamic(statistics)); 
+		if (roleShifting) seeker.addDynamic(new RoleShiftingDynamic(statistics)); 
 	}
 	@Test
 	public void verifyMultiplePeasantsAndBanditsReplicate() throws Exception

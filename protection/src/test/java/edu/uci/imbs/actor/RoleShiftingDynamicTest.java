@@ -5,18 +5,29 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class RoleShiftingReplicatorDynamicTest
+public class RoleShiftingDynamicTest
 {
 	private List<Peasant> peasants;
 	private List<Bandit> bandits;
 	private ProtectionPopulation population;
 	private ProtectionStatistics stats;
 	private Dynamic dynamic;
+	@BeforeClass
+	public static void setUpLog4J() throws Exception
+	{
+		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.ERROR);
+	}
 	@Before
 	public void setUp() throws Exception
 	{
@@ -32,7 +43,7 @@ public class RoleShiftingReplicatorDynamicTest
 	{
 		//TODO consider dropping support for this.
 		stats = new TestingStatistics(bandits, peasants, 1); 
-		Dynamic dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		Dynamic dynamic = new RoleShiftingDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 		assertEquals("shift 1 from bandits",3-1, population.getBandits().size()); 
@@ -43,7 +54,7 @@ public class RoleShiftingReplicatorDynamicTest
 	{
 		ProtectionParameters.MIMIC_BETTER_PERFORMING_POPULATION = true; 
 		stats = new TestingStatistics(bandits, peasants, 1); 
-		Dynamic dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		Dynamic dynamic = new RoleShiftingDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 		assertEquals("bandits doing better, so peasants mimic them:  shift 1 from peasants",4-1, population.getPeasants().size()); 
@@ -54,7 +65,7 @@ public class RoleShiftingReplicatorDynamicTest
 	public void verifyNoShiftInPopulation() throws Exception
 	{
 		stats = new TestingStatistics(bandits, peasants, 0); 
-		Dynamic dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		Dynamic dynamic = new RoleShiftingDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 		assertEquals(bandits, population.getBandits()); 
@@ -64,7 +75,7 @@ public class RoleShiftingReplicatorDynamicTest
 	public void verifyMultiplePeasantsShiftedToBanditsUpToSizeOfExistingPeasantPopulation() throws Exception
 	{
 		stats = new TestingStatistics(bandits, peasants, -5); 
-		dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		dynamic = new RoleShiftingDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 		assertEquals("all available peasants",4-4, population.getPeasants().size()); 
@@ -93,7 +104,7 @@ public class RoleShiftingReplicatorDynamicTest
 		assertEquals("moderate protection, but surrendered, so payoff is low; dropped",
 				.125, peasants.get(3).getPayoff(), .001); 
 
-		Dynamic dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		Dynamic dynamic = new RoleShiftingDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 		for (Peasant peasant : population.getPeasants()) 
@@ -111,7 +122,7 @@ public class RoleShiftingReplicatorDynamicTest
 	{
 		population = new ProtectionPopulation(bandits, new ArrayList<Peasant>()); 
 		stats = new TestingStatistics(bandits, peasants, 1); 
-		dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		dynamic = new RoleShiftingDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 		assertEquals("original bandit list size unchanged",3,population.getBandits().size()); 
@@ -119,11 +130,24 @@ public class RoleShiftingReplicatorDynamicTest
 
 		population = new ProtectionPopulation(new ArrayList<Bandit>(), peasants); 
 		stats = new TestingStatistics(bandits, peasants, -1); 
-		dynamic = new RoleShiftingReplicatorDynamic(stats); 
+		dynamic = new RoleShiftingDynamic(stats); 
 		dynamic.setPopulation(population); 
 		population = dynamic.rebuildPopulation(); 
 		assertEquals("original peasant list size unchanged",4,population.getPeasants().size()); 
 		assertEquals("no bandits created",0,population.getBandits().size()); 
+	}
+	@Test
+	public void verifyBuildPeasantReturnsBestOrRandomProtectionProportion() throws Exception
+	{
+		ProtectionParameters.resetForTesting();
+		ProtectionParameters.NEW_PEASANT_GETS_BEST_PROTECTION_PROPORTION = true; 
+		RoleShiftingDynamic dynamic = new RoleShiftingDynamic(null); 
+		dynamic.setPopulation(population); 
+		assertEquals("all peasants in the list have x=0.5, so that will be 'best'",
+				0.5, dynamic.buildPeasant(null).getProtectionProportion(), .001); 
+		ProtectionParameters.NEW_PEASANT_GETS_BEST_PROTECTION_PROPORTION = false; 
+		assertEquals("build a random peasant",
+				0.05, dynamic.buildPeasant(new Random(1234567891122l)).getProtectionProportion(), .001); 
 	}
 //	private Dynamic getRoleShiftingReplicatorDynamicWithForcedPayoffs()
 //	{

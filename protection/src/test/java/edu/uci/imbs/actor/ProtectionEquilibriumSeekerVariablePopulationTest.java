@@ -53,10 +53,10 @@ public class ProtectionEquilibriumSeekerVariablePopulationTest
 		dstDynamic.setFitnessFunction(fitnessFunction); 
 //		seeker.setReplicatorDynamic(replicatorDynamic); 
 		seeker.addDynamic(new ProtectionReplicatorDynamic(dstDynamic)); 
-		if (roleShifting) seeker.addDynamic(new RoleShiftingReplicatorDynamic(statistics)); 
+		if (roleShifting) seeker.addDynamic(new RoleShiftingDynamic(statistics)); 
 
 	}
-//	@Test
+	@Test
 	public void verifyEachRunCausesListsToBeUpdated() throws Exception
 	{
 		assertEquals(peasants, seeker.getPeasantList()); 
@@ -67,7 +67,7 @@ public class ProtectionEquilibriumSeekerVariablePopulationTest
 		assertNotSame(bandits, seeker.getBanditList());
 		
 	}
-//	@Test
+	@Test
 	public void verifyRunsToPeriodLimitIfDiscrepanciesNeverWithinThreshold() throws Exception
 	{
 		statistics.setPayoffDiscrepancyTolerance(.01);

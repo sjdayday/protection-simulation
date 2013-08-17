@@ -2,6 +2,8 @@
 
 package edu.uci.imbs.actor;
 
+import java.util.Random;
+
 
 public class Peasant extends Actor implements Heritable
 {
@@ -169,5 +171,12 @@ public class Peasant extends Actor implements Heritable
 	{
 		if (this.protectionBehavior == null) protectionBehavior = (ProtectionBehavior) BehaviorEnum.PEASANT_DEFENDS_AGAINST_MULTIPLE_BANDITS.build(this); 
 		return protectionBehavior; 
+	}
+	public static Peasant buildPeasantWithContestFunctionAndRandomProtectionProportion(Random random) 
+	{
+		Peasant peasant = new Peasant(); 
+		peasant.setFunction(ProtectionFunctionEnum.CONTEST.buildFunction(ProtectionParameters.CONTEST_FUNCTION_GAMMA)); 
+		peasant.setProtectionProportion(ProtectionParameters.PROTECTION_PARAMETER_INTERVAL_SIZE * random.nextInt(ProtectionParameters.PROTECTION_PARAMETER_NUMBER_INTERVALS));
+		return peasant; 
 	}
 }

@@ -1,5 +1,10 @@
 Protection-simulation simulates the Market for Protection (Konrad and Skaperdas, 2010:  http://link.springer.com/content/pdf/10.1007/s00199-010-0570-x.pdf)
 
+v1.1:  fixes, new parameter for role-shifting dynamic
+* Role-shifting dynamic adds new peasant with either random protection proportion or using best-performing proportion from existing population (default)
+  (ProtectionParameters.NEW_PEASANT_GETS_BEST_PROTECTION_PROPORTION defaults to true)
+* Fix:  dynamics were applied after peasant population state was reset, so surrendered payoffs did not affect payoff calculations.    
+
 v1.0:  bandits and peasants in the anarchy condition
 * The protection function is given the specific functional form of a contest function.
 * Peasants randomly choose a protection proportion.  

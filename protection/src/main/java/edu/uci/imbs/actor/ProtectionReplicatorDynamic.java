@@ -21,8 +21,10 @@ public class ProtectionReplicatorDynamic implements Dynamic
 	{
 		List<Peasant> newPeasants = new ArrayList<Peasant>(); 
 		replicatorDynamic.replicate(Peasant.class, protectionPopulation.getPeasants(), newPeasants);  
+//		System.out.println("ProtectionReplicatorDynamic.rebuildPopulation Number of peasants just replicated: "+newPeasants.size());
 		List<Bandit> newBandits = new ArrayList<Bandit>(); 
 		replicatorDynamic.replicate(Bandit.class, protectionPopulation.getBandits(), newBandits);  
+//		System.out.println("ProtectionReplicatorDynamic.rebuildPopulation Number of bandits just replicated: "+newBandits.size());
 		return new ProtectionPopulation(newBandits, newPeasants);
 	}
 

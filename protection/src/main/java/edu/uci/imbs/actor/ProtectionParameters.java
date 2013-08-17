@@ -37,6 +37,7 @@ public class ProtectionParameters
 	public static double FORCE_PEASANT_ALLOCATION_HIGH_PROPORTION;
 	public static double FORCE_PEASANT_ALLOCATION_LOW_PROPORTION;
 	public static int FORCE_PEASANT_ALLOCATION_LOW_INITIAL_PEASANTS;
+	public static boolean NEW_PEASANT_GETS_BEST_PROTECTION_PROPORTION = true;
 
 	static 
 	{
@@ -73,6 +74,7 @@ public class ProtectionParameters
 		FORCE_PEASANT_ALLOCATION_HIGH_PROPORTION = 0; 
 		FORCE_PEASANT_ALLOCATION_LOW_PROPORTION = 0; 
 		FORCE_PEASANT_ALLOCATION_LOW_INITIAL_PEASANTS = 0; 
+		NEW_PEASANT_GETS_BEST_PROTECTION_PROPORTION = true; 
 		logger.debug("reset for testing completed."); 
 	}
 

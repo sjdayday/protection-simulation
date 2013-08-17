@@ -2,15 +2,31 @@
 
 package edu.uci.imbs.actor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.Random;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class PeasantTest
 {
 	private Peasant peasant;
-
+	@BeforeClass
+	public static void setUpLog4J() throws Exception
+	{
+		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.ERROR);
+	}
 	@Before
 	public void setUp() throws Exception
 	{
@@ -181,7 +197,14 @@ public class PeasantTest
 		assertSame(currentBehavior, peasant.getProtectionBehavior());
 		peasant.tick();
 		assertNotSame("new behavior created each period",currentBehavior, peasant.getProtectionBehavior());
-		
+	}
+	@Test
+	public void verifyPeasantBuiltWithContestFunctionAndRandomProtectionProportion() throws Exception
+	{
+		ProtectionParameters.resetForTesting(); 
+		peasant = Peasant.buildPeasantWithContestFunctionAndRandomProtectionProportion(new Random(1234567891122l));
+		assertTrue(peasant.getFunction() instanceof ContestFunction); 
+		assertEquals(0.05, peasant.getProtectionProportion(), .001); 
 	}
 	
 }
