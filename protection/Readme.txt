@@ -30,7 +30,7 @@ As this implies ongoing development, this project is organized as an open-source
     https://github.com/sjdayday/protection-simulation.git
 This and related projects will be periodically re-uploaded to openabm.org, but will be maintained through github; the most current status will always be there.
 
-The project is organized for Maven deployment, but is not yet available through a Maven repository; contact me if you would like the 1.0 JAR 
+The project is organized for Maven deployment, but is not yet available through a Maven repository; contact me if you would like the 1.1 JAR 
 and are having difficulty generating it through your own Maven configuration.    
 
 This project is stand-alone, but generating results for different combinations of parameters is most easily done with the help of three other projects: 
