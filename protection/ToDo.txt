@@ -2,6 +2,7 @@ use strict math
 multiple bandits/multiple peasants out of heap space
 organize packages
 drop support for dynamic equilibrium
+drop support for MIMIC_BETTER_PERFORMING_POPULATION; should always be true. 
 
 
 match function:  alpha / beta in [0,1], no constraint on mu? 
