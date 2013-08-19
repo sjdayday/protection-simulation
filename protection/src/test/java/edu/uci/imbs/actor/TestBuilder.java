@@ -67,7 +67,7 @@ public class TestBuilder
 		{
 			peasant = new Peasant(); 
 			peasant.setFunction(protectionFunction);
-			peasant.setProtectionProportion(ProtectionParameters.PROTECTION_PARAMETER_INTERVAL_SIZE * r.nextInt(ProtectionParameters.PROTECTION_PARAMETER_NUMBER_INTERVALS));
+			peasant.setProtectionProportion(ProtectionParameters.PROTECTION_PROPORTION_INTERVAL_SIZE * r.nextInt(ProtectionParameters.PROTECTION_PROPORTION_NUMBER_INTERVALS));
 			peasants.add(peasant);
 		}
 		return peasants;

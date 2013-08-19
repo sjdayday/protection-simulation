@@ -1,5 +1,7 @@
 Protection-simulation simulates the Market for Protection (Konrad and Skaperdas, 2010:  http://link.springer.com/content/pdf/10.1007/s00199-010-0570-x.pdf)
 
+Overview:  http://www.openabm.org/model/3851/version/1/view
+
 v1.1:  fixes, new parameter for role-shifting dynamic
 * Role-shifting dynamic adds new peasant with either random protection proportion or using best-performing proportion from existing population (default)
   (ProtectionParameters.NEW_PEASANT_GETS_BEST_PROTECTION_PROPORTION defaults to true)

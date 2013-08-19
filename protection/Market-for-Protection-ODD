@@ -1,0 +1,183 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{line} = [draw, -latex']
+
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex	
+								
+\usepackage[round]{natbib}								
+\usepackage{setspace}									
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{changebar}
+%\usepackage{natbib}
+\title{Market for Protection ODD}
+\author{Steve Doubleday\\
+ University of California, Irvine}
+%\date{}							% Activate to display a given date or no date
+\usepackage{float}
+\doublespacing
+\begin{document}
+\maketitle
+\graphicspath{{figures_egt/}}
+
+
+
+\section*{Overview}
+\subsection*{Purpose}
+Konrad and Skaperdas \citeyearpar{konrad2012market}  develop an analytical model of the provision of security as a public good.  The analysis of this ``market for protection'' begins with a population of ``bandits'' preying on ``peasants'' interacting in ``anarchy''.  An agent-based simulation (MFPsim) has been developed to better understand the analytical model (MFP).  In particular, if the analytical model is re-implemented as an agent-based simulation, do the conclusions of the analytical model still hold?  For example, what is the effect of changing from continuous populations to discrete populations?
+
+A peasant may spend some portion \textit{x} of her unit effort on securing her output against bandits, spending the remainder of her effort (1 - \textit{x}) on productive work.   A protection function, \textit{p}(\textit{x}), models this security effort; it converts security effort into effective protection of some proportion of a peasant's output, leaving the remainder to be surrendered to a bandit.  Given continuous populations and a continuous, non-decreasing protection function, the MFP analysis then identifies an optimal proportion of the peasant's overall effort that should be dedicated to security, and the conditions under which the population of bandits and peasants will reach an equilibrium, where all actors have the same average payoff.  
+
+MFPsim modifies the MFP model as follows: 
+\begin{itemize}
+\item{Populations of bandits and peasants are discrete rather than continuous.}
+\item{The protection function is given the specific functional form of a contest success function.}
+\item{Peasants are randomly assigned a protection proportion. }
+\end{itemize}
+In MFPsim, equilibrium is defined as a state where the average payoffs to bandits and to peasants are equal, within a tolerance, and maintained for a configurable number of consecutive periods.   When the simulation reaches an end-state, the distribution of protection proportions in the peasant population can be compared to the optimal protection proportion predicted by the MFP model.    
+
+A technical purpose of the simulation is to enable future extensions to the simulation in a straight-forward manner to accommodate the remainder of the analytical model, where the original condition of anarchy is modified to introduce various forms of collective organization.
+
+\subsection*{State Variables and Scales}
+
+The behavior of individual Peasants varies according to their protection proportions:
+\begin{itemize}
+\item{\textit{protectionProportion}:  the amount of the peasant's unit effort devoted to defending its output, $\in$ [0,1].  Once set, the protection proportion stays constant for the lifetime of the peasant. Note:  although the domain is continuous, during creation of the peasant population, the Protection Model allocates peasant proportions in bins, at particular values within the domain, to simplify the subsequent analysis.}
+\end{itemize}
+
+All other state in MFPsim consists of a set of global parameters, whose values are set by the Protection Model.  These are discussed in the Submodels section.  
+
+\subsection*{Process Overview and scheduling}
+\begin{itemize}
+\item{When a peasant and a bandit interact, the peasant's payoff is:  
+\begin{equation}
+ U_p = p(x)(1-x) 
+\end{equation}
+The payoff to a bandit is: 
+\begin{equation}
+ U_b = [1 - p(x)](1-x)    
+\end{equation}
+That means that the peasant keeps a proportion \textit{p}(\textit{x}) of the productive output 1 - \textit{x}, and the remainder of that productive output is surrendered to the bandit.  If a peasant does not have an interaction with a peasant in a given period, the peasant retains all output 1 - \textit{x}; if a bandit does not have an interaction in a given period, the bandit's payoff is 0.}
+\item{The protection function  \textit{p}(\textit{x}) is given the functional form of a contest success function:
+\begin{equation}
+ p(x) =  \frac{\gamma x}{\gamma x + (1-\gamma)}    
+\end{equation}
+The parameter $\gamma$ (CONTEST\_FUNCTION\_GAMMA) is interpreted as the ``defensive ability'' of the peasant.}
+\item{In each period, the population of bandits and peasants are randomly matched 1:1 for interaction.  Payoffs for each agent are calculated, and one or more Dynamics are invoked, resulting in a new population of bandits and peasants.  A new period commences, with payoffs starting at 0; payoffs do not accumulate.  This process continues until one of the following end states occurs:
+\begin{itemize}
+\item{Peasants go extinct:  peasant population drops to 0.}
+\item{Bandits go extinct:  bandit population drops to 0.}
+\item{Peasants go to maximum:  peasant population exceeds MAXIMUM\_POPULATION\_SIZE}
+\item{Bandits go to maximum:  bandit population exceeds MAXIMUM\_POPULATION\_SIZE}
+\item{Equilibrium:  peasants and bandits have the same average payoff within a tolerance PAYOFF\_DISCREPANCY\_TOLERANCE, for consecutive periods EQUILIBRIUM\_NUMBER\_PERIODS\_WITHOUT\_ADJUSTMENT.   }
+\item{Run limit exceeded:  the number of periods without reaching one of the above end states reaches RUN\_LIMIT. }
+\end{itemize}
+When an end state is reached, the scenario ends. 
+}
+\item{There are two dynamics that may be applied to a population, resulting in a new population for the next period.\footnote{Current implementation:  DST dynamic is always invoked; Role-shifting dynamic may then optionally be invoked.  The order is not reversible.}}
+\begin{itemize}
+\item{Die/Survive/Thrive (DST) Dynamic:  this dynamic may result in the total population of agents changing in size, and is defined by two thresholds.  Agents whose payoff is not equal to or greater than the ``survive'' threshold (SURVIVE\_THRESHOLD) die without descendants.  An agent whose payoff is equal to or exceeds the survive threshold has one descendant, unless the payoff is equal to or exceeds the ``thrive'' threshold (THRIVE\_THRESHOLD), when the agent has two descendants.  A descendant inherits the strategy of its parent; specifically, a peasant in the new population inherits the protection proportion of its parent.\footnote{Current implementation:  The DST dynamic is always invoked, but may be effectively disabled by setting the survive threshold to 0 and the thrive threshold to 1.  There is a known defect with this implementation, where peasants with \textit{x} = 0 will thrive if not preyed upon. } }
+\item{Role-Shifting Dynamic:  this dynamic results in a percentage of the lowest-performing role shifting to the better-performing role.  The total population of agents does not change.  Role performance is defined by the average payoff for all members of a role in each period.  If the difference between the average payoffs is greater than PAYOFF\_DISCREPANCY\_TOLERANCE, then a percentage ADJUSTMENT\_FACTOR\_PERCENTAGE of the lower-performing agents shift to the other role.  When bandits shift to the peasant role, they are given a protection proportion determined by flag NEW\_PEASANT\_GETS\_ BEST\_PROTECTION\_PROPORTION.  If true, they get the current period's best performing protection proportion; otherwise, they get a randomly allocated protection proportion.  Fractional adjustments less than 1 are rounded to 1, but fractions for numbers above 1 are rounded down to the next integer. }
+\end{itemize}
+\end{itemize}
+
+\section*{Design Concepts}
+
+
+\subsection*{Emergence}
+The equilibria of the bandit / peasant population, and the most prevalent protection proportions, emerge from the individual interactions of bandits and peasants. 
+
+\subsection*{Adaptation}
+Agents do not adapt their behavior, nor do their strategies mutate.   Once assigned, a peasant and its descendants keep the same protection proportion.  Bandits do not have individual strategies.
+
+
+\subsection*{Fitness/Objectives}
+Agents attempt to maximize their payoffs (utilities) in their interactions with other agents.  But this behavior is determined by the combination of assigned protection proportion, and the matching pattern for interaction; there is no latitude for individual decision at the moment of interaction. 
+
+\subsection*{Prediction}
+Agents do not predict the consequences of their actions.
+
+\subsection*{Sensing}
+Agents do not sense their environment.  They are not placed on a spacial grid; their interaction patterns are determined randomly and externally. 
+
+\subsection*{Interactions}
+There are two interaction patterns, determined by flag NORMAL\_INTERACTION\_PATTERN.  If true, bandits are always paired with peasants.  If false, any agent may be paired with any other agent.  The latter setting is used to create a single population for the purposes of evolutionary game theory analysis.  
+
+The populations are matched randomly in each period, with one agent interacting with one other agent, until one population is exhausted.  The remaining agents have no interaction in that period, and receive a payoff as defined in the Process Overview. 
+
+
+\subsection*{Stochasticity}
+A single long integer is used as a seed for a pseudo-random number generator.  This is used first to allocate protection proportions randomly when the population of peasants is first built at the beginning of the scenario.  In each period, the random number generator is then used to shuffle one population, whose members are then selected one at a time to interact with the next member of the other population.   When bandits move to the peasant role under the Role-Shifting Dynamic, and if NEW\_PEASANT\_GETS\_ BEST\_PROTECTION\_PROPORTION is false, the random number generator is used to assign a protection proportion to the new peasant.  
+
+
+\subsection*{Collectives}
+There is no collective or social organization to either the bandit or peasant populations; agents interact randomly, and are not affected by the interactions of others. 
+\subsection*{Observation}
+Summary statistics are gathered for every scenario, as one record in a file formatted as comma-separated values.  Each record contains the values of each parameter, the parameter point, which defines a single scenario.  The file thus records the results of traversing the parameter space, as a collection of scenarios, termed a ``scenario set''.  In addition to the parameter values, each record includes these summary statistics:  
+\begin{itemize}
+\item{Scenario number:  unique integer for each scenario in the scenario set}
+\item{Stop reason code:  integer code defining for which of the six reasons the scenario stopped execution.  }
+\item{Period:  period in which the scenario stopped.}
+\item{Numbers of bandits and peasants, before and after replication in the final period of the scenario.}
+\item{Average bandit and peasant payoffs}
+\item{Discrepancy between average bandit and peasant payoffs}
+\item{Adjustment, if any, between the bandit and peasant roles.  Positive integers:  bandits to peasants; negative integers:  peasants to bandits; zero:  no change. }
+\item{Average, median and mode of the peasant protection proportion}
+\item{Average, median and mode of the number of peasants a bandit preys upon\footnote{Current implementation includes support for multiple bandits preying on multiple peasants; default is one bandit preys upon one peasant.}}
+\item{Number and percentage of peasants with the protection proportion defined by each bin (total bins defined by PROTECTION\_PROPORTION\_NUMBER\_INTERVALS.}
+\end{itemize}
+A log file is created for each scenario, containing the same statistics as defined in the summary file, for each period of the scenario.  
+
+\section*{Details}
+
+\subsection*{Initialization}
+Initialization for each scenario includes the following steps:
+\begin{itemize}
+\item{Peasant population built:  peasants numbering NUMBER\_PEASANTS are created, with  protection proportions randomly allocated at the boundaries of the bins numbering PROTECTION\_PROPORTION\_ NUMBER\_INTERVALS, each bin spanning an interval of PROTECTION\_PROPORTION\_ INTERVAL\_SIZE.  Each peasant is given a contest function; all contest functions for a given scenario share the same $\gamma$, CONTEST\_FUNCTION\_GAMMA.}
+\item{Bandit population built:  bandits numbering NUMBER\_BANDITS are created.}
+\item{An Interaction Pattern is initialized with the bandit and peasant populations, with mode determined by flag NORMAL\_INTERACTION\_PATTERN (see Interactions). }
+\item{Statistics are initialized to zeros to collect observation data.}
+\item{Dynamics are added to the scenario.  A DST dynamic is always added, with thresholds set per SURVIVE\_THRESHOLD and THRIVE\_THRESHOLD.  A Role-Shifting dynamic may be added, if ROLE\_SHIFTING is true. }
+\item{A pseudo-random number generator is initialized with the value of RANDOM\_SEED}
+\item{An Equilibrium Seeker is initialized with the above objects.  The run limit is set from RUN\_LIMIT.  The definition of equilibrium is set from EQUILIBRIUM\_NUMBER\_PERIODS\_ WITHOUT\_ADJUSTMENT and PAYOFF\_DISCREPANCY\_TOLERANCE (see Process Overview). The period is set to 1.}
+\end{itemize}
+The Protection Model invokes the Equilibrium Seeker to begin execution.  
+
+\subsection*{Input}
+There are no input data; all execution is controlled by parameters (see Submodels)
+
+\subsection*{Submodels}
+The routines of the Protection Model are controlled by the following parameters; details of their logic are outlined in the prior sections.\footnote{Current implementation:  there are other parameters in the v1.1 implementation that function, but have not been described in the studies that use the v1.1 code.  Left at their defaults, they will not affect the function of the code.  They implement:  a transaction cost to bandits for preying on peasants; enable multiple bandits to prey upon multiple peasants; enable a matching function to determine the probability that a bandit is successful in preying on a target peasant. }   
+\begin{itemize}
+\item{PROTECTION\_PROPORTION\_NUMBER\_INTERVALS:  positive integer number of bins into which Peasant protection proportions can be allocated }
+\item{PROTECTION\_PROPORTION\_INTERVAL\_SIZE:  size of each bin for Peasant protection proportions, $\in$ [0,1].   Interval\_size * number\_intervals should equal 1.0. }
+\item{CONTEST\_FUNCTION\_GAMMA:  input to the Peasant contest success function defining the defensive ability of the Peasant, $\in$ [0.5,1].  Shared for all peasants in the population for a given scenario. }
+\item{ROLE\_SHIFTING:  determines whether the Role-Shifting dynamic will be invoked, $\in$ \{true, false\}}
+\item{SURVIVE\_THRESHOLD:  determines the minimum payoff an agent must achieve in a period to have a single descendant in the next period, $\in$ [0,1]}
+\item{THRIVE\_THRESHOLD:  determines the minimum payoff an agent must achieve in a period to have two descendants in the next period, $\in$ [0,1]; greater than or equal to SURVIVE\_THRESHOLD}
+\item{PAYOFF\_DISCREPANCY\_TOLERANCE:  defines the maximum difference between the average payoffs for bandits and peasants for the two populations to be considered to be in equilibrium in the current period, $\in$ (0,1)}
+\item{ADJUSTMENT\_FACTOR\_PERCENTAGE:  percentage of the lower-performing role that will be shifted to the better-performing role at the conclusion of this period, if ROLE\_SHIFTING is true, $\in$ (0,1)}
+\item{EQUILIBRIUM\_NUMBER\_PERIODS\_WITHOUT\_ADJUSTMENT:  positive integer number of consecutive periods without adjustment that must elapse for the scenario to be considered to be in equilibrium.}
+\item{NUMBER\_PEASANTS:  positive integer number of peasants that will be created during initialization}
+\item{NUMBER\_BANDITS:  positive integer number of bandits that will be created during initialization}
+\item{RUN\_LIMIT:  positive integer number of periods that the scenario will execute without reaching equilibrium, before the scenario will stop. }
+\item{NORMAL\_INTERACTION\_PATTERN:  determines whether bandits only interact with peasants, if true, or whether any agent can interact with any other agent, $\in$ \{true, false\}}
+\item{MAXIMUM\_POPULATION\_SIZE:  positive integer setting the maximum size of the population of either bandits or peasants after replication; when exceeded, the scenario will stop after that period. }
+\item{NEW\_PEASANT\_GETS\_BEST\_PROTECTION\_PROPORTION:  positive integer setting the maximum size of the population of either bandits or peasants after replication; when exceeded, the scenario will stop after that period. }
+\item{FORCE\_PEASANT\_ALLOCATION\_TO\_HIGH\_LOW:  determines whether peasants will be initialized with one of two protection proportions, if true; $\in$ \{true, false\}.  For use in evolutionary game theory analyses.  Defaults to false. }
+\item{FORCE\_PEASANT\_ALLOCATION\_LOW\_INITIAL\_PEASANTS:  non-negative integer number of peasants less than or equal to NUMBER\_PEASANTS that will be initialized with protection proportion FORCE\_PEASANT\_ALLOCATION\_LOW\_PROPORTION, if FORCE\_PEASANT\_ALLOCATION\_TO\_HIGH\_LOW is true.}
+\item{FORCE\_PEASANT\_ALLOCATION\_LOW\_PROPORTION:  if FORCE\_PEASANT\_ ALLOCATION\_TO\_HIGH\_LOW is true, sets the protection proportion $\in$ [0,1] of a number of peasants equaling FORCE\_PEASANT\_ALLOCATION\_LOW\_INITIAL\_PEASANTS. }
+\item{FORCE\_PEASANT\_ALLOCATION\_HIGH\_PROPORTION:  if FORCE\_PEASANT\_ ALLOCATION\_TO\_HIGH\_LOW is true, sets the protection proportion $\in$ [0,1] of a number of peasants equaling NUMBER\_PEASANTS - FORCE\_PEASANT\_ALLOCATION\_ LOW\_INITIAL\_PEASANTS. }
+\item{RANDOM\_SEED:  long integer used as the seed for a pseudo-random number generator. }
+\end{itemize}
+
+\bibliographystyle{plainnat}
+    \bibliography{All}
+
+\end{document}  

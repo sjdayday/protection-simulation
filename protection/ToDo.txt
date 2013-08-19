@@ -3,6 +3,7 @@ multiple bandits/multiple peasants out of heap space
 organize packages
 drop support for dynamic equilibrium
 drop support for MIMIC_BETTER_PERFORMING_POPULATION; should always be true. 
+check for consistency in use of existing RANDOM, rather than re-initializing with RANDOM_SEED
 
 
 match function:  alpha / beta in [0,1], no constraint on mu? 

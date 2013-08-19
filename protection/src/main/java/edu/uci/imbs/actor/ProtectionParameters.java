@@ -11,8 +11,8 @@ public class ProtectionParameters
 	private static Logger logger = Logger.getLogger(ProtectionParameters.class);
 	public static long RANDOM_SEED = 0;
 	public static boolean ROLE_SHIFTING;
-	public static double PROTECTION_PARAMETER_INTERVAL_SIZE;
-	public static int PROTECTION_PARAMETER_NUMBER_INTERVALS;
+	public static double PROTECTION_PROPORTION_INTERVAL_SIZE;
+	public static int PROTECTION_PROPORTION_NUMBER_INTERVALS;
 	public static double CONTEST_FUNCTION_GAMMA;
 	public static double SURVIVE_THRESHOLD;
 	public static double THRIVE_THRESHOLD;
@@ -47,8 +47,8 @@ public class ProtectionParameters
 	public static void resetForTesting()
 	{
 		resetRandomSeedForTesting(); 
-		PROTECTION_PARAMETER_INTERVAL_SIZE = .05; 
-		PROTECTION_PARAMETER_NUMBER_INTERVALS = 21; 
+		PROTECTION_PROPORTION_INTERVAL_SIZE = .05; 
+		PROTECTION_PROPORTION_NUMBER_INTERVALS = 21; 
 		CONTEST_FUNCTION_GAMMA = 0.5; 
 		ROLE_SHIFTING = false;
 		SURVIVE_THRESHOLD = 0.1; 

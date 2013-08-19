@@ -176,7 +176,7 @@ public class Peasant extends Actor implements Heritable
 	{
 		Peasant peasant = new Peasant(); 
 		peasant.setFunction(ProtectionFunctionEnum.CONTEST.buildFunction(ProtectionParameters.CONTEST_FUNCTION_GAMMA)); 
-		peasant.setProtectionProportion(ProtectionParameters.PROTECTION_PARAMETER_INTERVAL_SIZE * random.nextInt(ProtectionParameters.PROTECTION_PARAMETER_NUMBER_INTERVALS));
+		peasant.setProtectionProportion(ProtectionParameters.PROTECTION_PROPORTION_INTERVAL_SIZE * random.nextInt(ProtectionParameters.PROTECTION_PROPORTION_NUMBER_INTERVALS));
 		return peasant; 
 	}
 }
