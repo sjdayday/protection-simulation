@@ -41,6 +41,8 @@ This project is stand-alone, but generating results for different combinations o
   protection-scenario-fit:  Uses the two project above to enable fitlibrary acceptance tests and production simulations to be run against this project (the Market for Protection model)
     https://github.com/sjdayday/protection-simulation-fit.git
  
+Next steps and known bugs are in ToDo.txt
+
 This is not a one-person project -- help is welcome!
 
 Steve Doubleday

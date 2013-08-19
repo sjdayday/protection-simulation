@@ -22,4 +22,7 @@ typical scenario sets as actual acceptance tests:
   DST dynamic w/forced allocation for game theory
   role-shifting w DST & multiple survive/thrive thresholds
   multiple bandits/multiple peasants
+ 
+ Known defects
+ 1.  DST dynamic is not completely disabled by setting s=0 and t=1, because a peasant with x=0 who is not preyed upon will thrive.
     
