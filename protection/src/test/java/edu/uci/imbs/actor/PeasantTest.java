@@ -51,16 +51,16 @@ public class PeasantTest
 		peasant.setProtectionProportion(0);
 		assertEquals(0, peasant.getProtectionProportion(), .001); 
 		assertEquals(1, peasant.getWorkProportion(), .001);
-		peasant.setProtectionProportion(.75f);
-		assertEquals(.75f, peasant.getProtectionProportion(), .001); 
-		assertEquals(.25f, peasant.getWorkProportion(), .001);
+		peasant.setProtectionProportion(.75);
+		assertEquals(.75, peasant.getProtectionProportion(), .001); 
+		assertEquals(.25, peasant.getWorkProportion(), .001);
 	}
 	@Test
 	public void verifyResourceStaysBetweenZeroAndOne() throws Exception
 	{
-		peasant.setProtectionProportion(-1f);
+		peasant.setProtectionProportion(-1);
 		assertEquals(0, peasant.getProtectionProportion(), .001);
-		peasant.setProtectionProportion(2f);
+		peasant.setProtectionProportion(2);
 		assertEquals(1, peasant.getProtectionProportion(), .001);
 	}
 	@Test
